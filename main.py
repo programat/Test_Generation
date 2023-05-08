@@ -1,7 +1,22 @@
+# библиотеки для интерфейса
+import tkinter as tk
+from tkinter import ttk
+import os
+
+# библиотеки для работы с word
 import docx
+from docx.oxml import OxmlElement
+from docx.oxml.ns import qn
+
+# библиотеки для генерации
 from itertools import product
 import random
 import fractions as fr
+
+# подключение внешних файлов
+from tasks.task8helpfunc import printTask8
+# from tasks.task9helpfunc import printTask9
+from tasks.task13helpfunc import printTask13
 
 # def style_header():
 #     # изменение свойств шрифта и размера шрифта
@@ -18,18 +33,31 @@ import fractions as fr
 #     font.size = docx.shared.Pt(16)
 #     paragraph.alignment = docx.enum.text.WD_ALIGN_PARAGRAPH.JUSTIFY
 
+def table_style():
+    # table.style = 'Table Grid'
+    table.alignment = docx.enum.table.WD_TABLE_ALIGNMENT.CENTER
+
+    table_font = table.style.font
+    table_font.name = 'Times New Roman'
+    table_font.size = docx.shared.Pt(16)
+
+    for row in table.rows:
+        for cell in row.cells:
+            cell_font = cell.paragraphs[0].style.font
+            cell_font.name = 'Times New Roman'
+            cell_font.size = docx.shared.Pt(16)
+
 tasks = {
     1: 'Игральная кость бросается три раза. Тогда вероятность того, что сумма выпавших очков не меньше шестнадцати, равна: ',
-    2: 'Вероятность, что наудачу брошенная в круг точка окажется внутри вписанного в него квадрата равна',
-    3: 'Сантехник обслуживает три дома. Вероятность того, что в течение часа потребуется его помощь в первом доме, равна 0,15; во втором – 0,25; в третьем – 0,2. Тогда вероятность  того, что в течение часа потребуется его помощь хотя бы в одном доме, рав-на:',
-    4: 'Предприятие выплачивает 44 % всех зарплат разнорабочим, а 56 % – остальным. Вероятность того, что разнорабочий не получит зарплату в срок, равна 0,2; а для остальных эта вероят-ность составляет 0,1. Тогда вероятность того, что очередная зар-плата будет выдана в срок, равна:',
+    2: 'Вероятность, что наудачу брошенная в круг точка окажется внутри вписанного в него квадрата равна:',
+    3: 'Сантехник обслуживает три дома. Вероятность того, что в течение часа потребуется его помощь в первом доме, равна 0,15; во втором – 0,25; в третьем – 0,2. Тогда вероятность  того, что в течение часа потребуется его помощь хотя бы в одном доме, равна (приближенно равна):',
+    4: 'Предприятие выплачивает 44 % всех зарплат разнорабочим, а 56 % – остальным. Вероятность того, что разнорабочий не получит зарплату в срок, равна 0,2; а для остальных эта вероятность составляет 0,1. Тогда вероятность того, что очередная зарплата будет выдана в срок, равна:',
     5: 'Имеются четыре коробки, в которых сидят по 3 белых и по 7 черных котят, и шесть коробок, в которых сидят по 8 белых и по 2 черных котенка. Из наудачу взятой коробки вынимается один котенок, который оказался белым. Тогда вероятность того, что этого котенка достали из первой серии коробок, равна:',
-    6: 'Дискретная случайная величина X задана законом рас-пределения вероятностей:',
-    7: 'Дискретная случайная величина X задана законом рас-пределения вероятностей:'
+    6: ('Дискретная случайная величина X задана законом распределения вероятностей:', 'Тогда вероятность P(<) равна:'),
+    7: ('Дискретная случайная величина X задана законом распределения вероятностей:', 'И вероятность P(<) = 0,6. Тогда значения a, b и c могут быть равны:')
 }
 
 answers = dict()
-
 
 def t1():
     n, r = (6, 3)
@@ -62,9 +90,215 @@ def t1():
 
     return [task, p, w1, w2, w3]
 
+def t3():
+    flag = 0
+    while not flag:
+        flag = 1
+        # заменить на одну строчку
+        items = []
+        i = 0.1
+        while i <= .5:
+            items.append(round(i, 2))
+            i += 0.1
+        numbers = [random.choice(items) for i in range(3)]
+        j = random.randint(0, 2)
+
+        numbers[j] += 0.05
+        numbers[j] = round(numbers[j], 3)
+        task = (tasks[3].replace('0,15', str(numbers[0]), 1).replace('0,25', str(numbers[1]), 1).replace('0,2', str(
+            numbers[2]), 1)).replace('0.', '0,')
+        # print(numbers)
+        numbers_q = [1 - i for i in numbers]
+        p = round(1 - numbers_q[0] * numbers_q[1] * numbers_q[2], 7)
+        w1 = round(1 - numbers[0] * numbers[1] * numbers[2], 7)
+        w2 = round(numbers_q[0] * numbers_q[1] * numbers_q[0], 7)
+        w3 = round(numbers[0] * numbers[1] * numbers[2], 7)
+
+        ans = [task, p, w1, w2, w3]
+        # print('iteration', ans[1:])
+        for i in range(1, len(ans)):
+            for j in range(i + 1, len(ans)):
+                if abs(ans[i] - ans[j]) <= 0.01:
+                    print(ans[i], ans[j])
+                    flag = 0
+    # print('finally')
+    # print(ans)
+    return ans
+
+def t4():
+    flag = 0
+    while not flag:
+        flag = 1
+
+        p_b1 = random.randint(30, 60)  # разнорабочих в процентах
+        p_b2 = 100 - p_b1  # остальные
+        p_b1_a, p_b2_a = 0, 0
+        while p_b1_a == p_b2_a:
+            p_b1_a = round(round(random.uniform(.1, .3) / .1) * .1, 5)  # вер-ть, что разнорабочий НЕ получит зп
+            p_b2_a = round(round(random.uniform(.1, .3) / .1) * .1, 5)  # вер-ть, что обычный рабочий НЕ получит зп
+            q_b1_a = 1 - round(p_b1_a, 5)
+            q_b2_a = 1 - round(p_b2_a, 5)
+
+        task = tasks[4].replace('44 %', '$1$', 1).replace('56 %', '$2$', 1).replace('0,2', '$3$', 1).replace('0,1',
+                                                                                                             '$4$', 1)
+        task = task.replace('$1$', f'{p_b1} %', 1).replace('$2$', f'{p_b2} %', 1).replace('$3$', f'{p_b1_a}',
+                                                                                          1).replace('$4$', f'{p_b2_a}',
+                                                                                                     1)
+
+        p_b1 = round(p_b1 / 100, 5)
+        p_b2 = round(p_b2 / 100, 5)
+
+        p = round(p_b1 * q_b1_a + p_b2 * q_b2_a, 7)
+        w1 = round(p_b1 * p_b1_a + p_b2 * p_b2_a, 7)
+        w2 = round(p + .12, 7)
+        w3 = round(w1 - .12, 7)
+
+        ans = [task, p, w1, w2, w3]
+        # print('iteration', ans)
+        for i in range(1, len(ans)):
+            for j in range(i + 1, len(ans)):
+                if abs(ans[i] - ans[j]) <= 0.01 or ans[i] > 0.95 or ans[i] < 0.1 or ans[i] == ans[j]:
+                    # print(ans[i], ans[j])
+                    flag = 0
+                    break
+            if not flag:
+                break
+    # print('finally')
+    # print(ans)
+    return ans
+
+def t5():
+    flag = 0
+    while not flag:
+        flag = 1
+
+        numbers = {3: 'три коробки', 4: 'четыре коробки', 5: 'пять коробок', 6: 'шесть коробок', 7: 'семь коробок'}
+        boxes_1 = random.randrange(3, 7)  # выбрали количество коробок первой серии
+        boxes_2 = abs(10 - boxes_1)
+
+        white_1 = random.randint(2, 8)
+        black_1 = abs(10 - white_1)
+
+        white_2 = random.randint(2, 8)
+        while white_2 == white_1:
+            white_2 = random.randint(2, 8)
+        black_2 = abs(10 - white_2)
+
+        p_b1 = round(boxes_1 / 10, 5)  # вероятность выбора коробок первой серии
+        p_b2 = round(boxes_2 / 10, 5)  # второй
+
+        p_b1_a, p_b2_a = round(white_1 / 10, 5), round(white_2 / 10, 5)
+
+        task = tasks[5].replace('четыре коробки', numbers[boxes_1], 1).replace('шесть коробок', numbers[boxes_2], 1).replace(' 3 ', ' $1$ ', 1).replace(' 7 ', ' $2$ ', 1).replace(' 8 ', ' $3$ ', 1).replace(' 2 ', ' $4$ ', 1)
+        task = task.replace('$1$', f'{white_1}', 1).replace('$2$', f'{black_1}', 1).replace('$3$', f'{white_2}', 1).replace('$4$', f'{black_2}', 1)
+
+        p = round((p_b1*p_b1_a) / (p_b1 * p_b1_a + p_b2 * p_b2_a), 7)
+        w1 = round(p_b1 * p_b1_a + p_b2 * p_b2_a, 7)
+        w2 = round((p_b2*p_b2_a) / (p_b1 * p_b1_a + p_b2 * p_b2_a), 7)
+        w3 = round(p + .12, 7)
+
+        ans = [task, p, w1, w2, w3]
+        # print('iteration', ans)
+        for i in range(1, len(ans)):
+            for j in range(i + 1, len(ans)):
+                if abs(ans[i] - ans[j]) <= 0.01 or ans[i] > 0.95 or ans[i] < 0.1 or ans[i] == ans[j] or len(str(ans[i])) > 6:
+                    flag = 0
+                    break
+            if not flag:
+                break
+    # print('finally')
+    # print(ans)
+    return ans
+
+def t6():
+    flag = 0
+    while not flag:
+        flag = 1
+
+        # Задание минимального и максимального значения для каждого числа
+        min_value = 0.18
+        max_value = 0.48
+        # Генерация 4 случайных чисел в диапазоне от min_value до max_value с шагом 0.1
+        numbers = [round(random.uniform(min_value, max_value), 2) for i in range(3)]
+        numbers.append(round(1 - numbers[0]-numbers[1]-numbers[2], 2))
+        while sum([abs(i) for i in numbers]) != 1:
+            numbers = [round(random.uniform(min_value, max_value), 2) for i in range(3)]
+            numbers.append(round(1 - numbers[0]-numbers[1]-numbers[2], 2))
+
+        ans = [numbers, round(numbers[1]+numbers[2], 5), round(numbers[0]+numbers[1]+numbers[3], 5), numbers[0], numbers[1]]
+        # print('iteration', ans[1:])
+        for i in range(1, len(ans)):
+            for j in range(i + 1, len(ans)):
+                if abs(ans[i] - ans[j]) <= 0.03:
+                    # print(ans[i], ans[j])
+                    flag = 0
+    # print('finally')
+    # print(ans)
+    return ans
+
+def t7():
+    flag = 0
+    while not flag:
+        flag = 1
+
+        numbers = []
+        numbers.append(round(random.uniform(0.12, 0.22), 2))
+        numbers.append(round(random.uniform(0.12, 0.3), 2))
+        numbers.append(round(0.6 - numbers[0] - numbers[1], 2))
+        numbers.append(round(random.uniform(0.18, 0.3), 2))
+        numbers.append(round(0.4 - numbers[3], 2))
+
+        # print(numbers)
+
+        p = (numbers[1], numbers[2], numbers[3])
+        w1 = tuple(round(random.uniform(0.12, 0.22), 2) for i in range(3))
+        w2 = tuple(round(random.uniform(0.12, 0.22), 2) for i in range(3))
+        w3 = tuple(round(random.uniform(0.12, 0.22), 2) for i in range(3))
+
+        ans = [numbers, p, w1, w2, w3]
+        # print('iteration', ans)
+        for i in range(1, len(ans)):
+            for j in range(i + 1, len(ans)):
+                if ans[i] == ans[j]:
+                    flag = 0
+    # print('finally')
+    # print(ans)
+    return ans
+
+def create_main_window():
+    root = tk.Tk()
+    root.geometry("300x200")
+    root.title("Генерация тестов")
+
+    # Создаем заголовок
+    title_label = tk.Label(root, text="Генерация тестов", font=("Helvetica", 20))
+    title_label.pack(pady=10)
+
+    # Создаем текстовое поле для ввода количества тестов
+    num_tests_label = tk.Label(root, text="Количество тестов:")
+    num_tests_label.pack(pady=10)
+    num_tests_entry = tk.Entry(root)
+    num_tests_entry.pack()
+
+    # Создаем стиль для кнопок
+    button_style = ttk.Style()
+    button_style.configure("Custom.TButton", background="gray", foreground="white", padding=10, font=("Helvetica", 12), borderwidth=0, focuscolor="none", focusthickness=0)
+    button_style.map("Custom.TButton", background=[("active", "darkgray")], foreground=[("active", "white")])
+
+    # Создаем кнопку для генерации тестов
+    generate_tests_button = ttk.Button(root, text="Сгенерировать тесты", style="Custom.TButton")
+    generate_tests_button.pack(pady=10)
+
+    # Создаем кнопку для скачивания файла
+    download_file_button = ttk.Button(root, text="Скачать файл", style="Custom.TButton")
+    download_file_button.pack(pady=10)
+
+    # Показываем главное окно
+    root.mainloop()
+
 
 if __name__ == '__main__':
-    t1()
+    create_main_window()
     document = docx.Document()
 
     # задание стиля для header
@@ -103,40 +337,17 @@ if __name__ == '__main__':
     run = paragraph.add_run(task[0])
     run.style = style_task
 
-    table = document.add_table(rows=1, cols=4)
-    table.style = 'Table Grid'
-    table.alignment = docx.enum.table.WD_TABLE_ALIGNMENT.CENTER
-
-    table_font = table.style.font
-    table_font.name = 'Times New Roman'
-    table_font.size = docx.shared.Pt(16)
-
-    for row in table.rows:
-        for cell in row.cells:
-            cell_font = cell.paragraphs[0].style.font
-            cell_font.name = 'Times New Roman'
-            cell_font.size = docx.shared.Pt(16)
-
-
     task_ans = task[1:]
     random.shuffle(task_ans)
+
+    table = document.add_table(rows=1, cols=4)
+    table_style()
 
     row_cells = table.rows[0].cells
     row_cells[0].text = f"а) {task_ans[0]};"
     row_cells[1].text = f"б) {task_ans[1]};"
     row_cells[2].text = f"в) {task_ans[2]};"
     row_cells[3].text = f"г) {task_ans[3]}."
-
-    # for cell in row_cells:
-    #     paragraphs = cell.paragraphs
-    #     for paragraph in paragraphs:
-    #         paragraph.style = document.styles['Table Content']
-    #         run = paragraph.runs[0]
-    #         run.font.name = 'Times New Roman'
-    #         run.font.size = docx.shared.Pt(16)
-    #         run.font.bold = False
-    #         run.font.italic = False
-    #         paragraph.alignment = docx.enum.text.WD_ALIGN_PARAGRAPH.CENTER
 
     # задание 2
     paragraph = document.add_paragraph()
@@ -147,14 +358,37 @@ if __name__ == '__main__':
     run = paragraph.add_run(tasks[2])
     run.style = style_task
 
+    task_ans = [f'1/2\u03C0', f'2/\u03C0', f'\u03C0/36', f'\u221A3/4']
+    random.shuffle(task_ans)
+
+    table = document.add_table(rows=1, cols=4)
+    table_style()
+    row_cells = table.rows[0].cells
+    row_cells[0].text = f"а) {task_ans[0]};"
+    row_cells[1].text = f"б) {task_ans[1]};"
+    row_cells[2].text = f"в) {task_ans[2]};"
+    row_cells[3].text = f"г) {task_ans[3]}."
+
     # задание 3
     paragraph = document.add_paragraph()
     run = paragraph.add_run('3. ')
     run.style = style_task
     run.bold = True
 
-    run = paragraph.add_run(tasks[3])
+    task = t3()
+    run = paragraph.add_run(task[0])
     run.style = style_task
+
+    task_ans = task[1:]
+    random.shuffle(task_ans)
+
+    table = document.add_table(rows=1, cols=4)
+    table_style()
+    row_cells = table.rows[0].cells
+    row_cells[0].text = f"а) {task_ans[0]};"
+    row_cells[1].text = f"б) {task_ans[1]};"
+    row_cells[2].text = f"в) {task_ans[2]};"
+    row_cells[3].text = f"г) {task_ans[3]}."
 
     # задание 4
     paragraph = document.add_paragraph()
@@ -162,17 +396,39 @@ if __name__ == '__main__':
     run.style = style_task
     run.bold = True
 
-    run = paragraph.add_run(tasks[4])
+    task = t4()
+    run = paragraph.add_run(task[0])
     run.style = style_task
+    task_ans = task[1:]
+    random.shuffle(task_ans)
+
+    table = document.add_table(rows=1, cols=4)
+    table_style()
+    row_cells = table.rows[0].cells
+    row_cells[0].text = f"а) {task_ans[0]};"
+    row_cells[1].text = f"б) {task_ans[1]};"
+    row_cells[2].text = f"в) {task_ans[2]};"
+    row_cells[3].text = f"г) {task_ans[3]}."
 
     # задание 5
     paragraph = document.add_paragraph()
-    run = paragraph.add_run('3. ')
+    run = paragraph.add_run('5. ')
     run.style = style_task
     run.bold = True
 
-    run = paragraph.add_run(tasks[5])
+    task = t5()
+    run = paragraph.add_run(task[0])
     run.style = style_task
+    task_ans = task[1:]
+    random.shuffle(task_ans)
+
+    table = document.add_table(rows=1, cols=4)
+    table_style()
+    row_cells = table.rows[0].cells
+    row_cells[0].text = f"а) {task_ans[0]};"
+    row_cells[1].text = f"б) {task_ans[1]};"
+    row_cells[2].text = f"в) {task_ans[2]};"
+    row_cells[3].text = f"г) {task_ans[3]}."
 
     # задание 6
     paragraph = document.add_paragraph()
@@ -180,8 +436,75 @@ if __name__ == '__main__':
     run.style = style_task
     run.bold = True
 
-    run = paragraph.add_run(tasks[6])
+    run = paragraph.add_run(tasks[6][0])
     run.style = style_task
+
+    task_ans = t6()
+
+    table = document.add_table(rows=2, cols=5)
+    table.style = 'Table Grid'
+
+    row_cells = table.rows[0].cells
+    p = row_cells[0].paragraphs[0]
+    run = p.add_run()
+    t = OxmlElement('w:t')
+    t.set(qn('xml:space'), 'preserve')
+    t.text = 'x\u1D62'
+    run._r.append(t)
+    row_cells[1].text = f"1"
+    row_cells[2].text = f"2"
+    row_cells[3].text = f"4"
+    row_cells[4].text = f"6"
+
+    row_cells = table.rows[1].cells
+    p = row_cells[0].paragraphs[0]
+    run = p.add_run()
+    t = OxmlElement('w:t')
+    t.set(qn('xml:space'), 'preserve')
+    t.text = 'p\u1D62'
+    run._r.append(t)
+    row_cells[1].text = f"{task_ans[0][0]}"
+    row_cells[2].text = f"{task_ans[0][1]}"
+    row_cells[3].text = f"{task_ans[0][2]}"
+    row_cells[4].text = f"{task_ans[0][3]}"
+
+    table.alignment = docx.enum.table.WD_TABLE_ALIGNMENT.CENTER  # располагаем таблицу по центру
+    for row in table.rows:
+        for cell in row.cells:
+            cell.width = docx.shared.Inches(0.8)
+    table.autofit = False
+    for row in table.rows:
+        for cell in row.cells:
+            paragraphs = cell.paragraphs
+            for paragraph in paragraphs:
+                paragraph.alignment = docx.enum.text.WD_ALIGN_PARAGRAPH.CENTER  # устанавливаем выравнивание ячеек по центру по вертикали
+                for run in paragraph.runs:
+                    run.font.bold = False  # убираем жирный шрифт
+
+    paragraph = document.add_paragraph()
+    task2 = tasks[6][1].split('P(<)')
+    run = paragraph.add_run("\n   " + task2[0])
+    run.style = style_task
+    run = paragraph.add_run('P')
+    run.font.italic = True
+    run = paragraph.add_run(f"(1 < ")
+    run.font.italic = False
+    run = paragraph.add_run("X")
+    run.font.italic = True
+    run=paragraph.add_run(f' \u2264 4)')
+    run.font.italic = False
+    run = paragraph.add_run(task2[1])
+
+    task_ans = task_ans[1:]
+    random.shuffle(task_ans)
+
+    table = document.add_table(rows=1, cols=4)
+    table_style()
+    row_cells = table.rows[0].cells
+    row_cells[0].text = f"а) {task_ans[0]};"
+    row_cells[1].text = f"б) {task_ans[1]};"
+    row_cells[2].text = f"в) {task_ans[2]};"
+    row_cells[3].text = f"г) {task_ans[3]}."
 
     # задание 7
     paragraph = document.add_paragraph()
@@ -189,7 +512,103 @@ if __name__ == '__main__':
     run.style = style_task
     run.bold = True
 
-    run = paragraph.add_run(tasks[7])
+    run = paragraph.add_run(tasks[7][0])
     run.style = style_task
+
+    task_ans = t7()
+
+    table = document.add_table(rows=2, cols=6)
+    table.style = 'Table Grid'
+
+    row_cells = table.rows[0].cells
+    p = row_cells[0].paragraphs[0]
+    run = p.add_run()
+    t = OxmlElement('w:t')
+    t.set(qn('xml:space'), 'preserve')
+    t.text = 'x\u1D62'
+    run._r.append(t)
+    row_cells[1].text = f"1"
+    row_cells[2].text = f"3"
+    row_cells[3].text = f"5"
+    row_cells[4].text = f"7"
+    row_cells[5].text = f"9"
+
+    row_cells = table.rows[1].cells
+    p = row_cells[0].paragraphs[0]
+    run = p.add_run()
+    t = OxmlElement('w:t')
+    t.set(qn('xml:space'), 'preserve')
+    t.text = 'p\u1D62'
+    run._r.append(t)
+    row_cells[1].text = f"{task_ans[0][0]}"
+    row_cells[2].text = f"{task_ans[0][1]}"
+    row_cells[3].text = f"{task_ans[0][2]}"
+    row_cells[4].text = f"{task_ans[0][3]}"
+    row_cells[5].text = f"{task_ans[0][4]}"
+
+    table.alignment = docx.enum.table.WD_TABLE_ALIGNMENT.CENTER  # располагаем таблицу по центру
+    for row in table.rows:
+        for cell in row.cells:
+            cell.width = docx.shared.Inches(0.8)
+    table.autofit = False
+    for row in table.rows:
+        for cell in row.cells:
+            paragraphs = cell.paragraphs
+            for paragraph in paragraphs:
+                paragraph.alignment = docx.enum.text.WD_ALIGN_PARAGRAPH.CENTER  # устанавливаем выравнивание ячеек по центру по вертикали
+                for run in paragraph.runs:
+                    run.font.bold = False  # убираем жирный шрифт
+
+    paragraph = document.add_paragraph()
+    task2 = tasks[7][1].split('P(<)')
+    run = paragraph.add_run("\n   " + task2[0])
+    run.style = style_task
+    run = paragraph.add_run('P')
+    run.font.italic = True
+    run = paragraph.add_run(f"(1 \u2264 ")
+    run.font.italic = False
+    run = paragraph.add_run("X")
+    run.font.italic = True
+    run = paragraph.add_run(f' \u2264 4)')
+    run.font.italic = False
+    run = paragraph.add_run(task2[1])
+
+    task_ans = task_ans[1:]
+    random.shuffle(task_ans)
+
+    table = document.add_table(rows=2, cols=2)
+    table_style()
+    row_cells = table.rows[0].cells
+    row_cells[0].text = f"а) a = {task_ans[0][0]}; b = {task_ans[0][1]}; c = {task_ans[0][2]};"
+    row_cells[1].text = f"б) a = {task_ans[1][0]}; b = {task_ans[1][1]}; c = {task_ans[1][2]};"
+    row_cells = table.rows[1].cells
+    row_cells[0].text = f"в) a = {task_ans[2][0]}; b = {task_ans[2][1]}; c = {task_ans[2][2]};"
+    row_cells[1].text = f"г) a = {task_ans[3][0]}; b = {task_ans[3][1]}; c = {task_ans[3][2]}."
+
+    # задание 8
+    paragraph = document.add_paragraph()
+    task = "Непрерывная случайная величина X задана плотностью распределения вероятностей:\t"
+    run = paragraph.add_run('8. ')
+    ran = paragraph.add_run(task)
+    run.style = style_task
+    run.bold = True
+    printTask8(document)
+    paragraph = document.add_paragraph()
+
+    # задание 13
+    M = random.randint(1, 31)  # Создаем мат ожидание
+    D = (random.randint(1, 10)) ** 2  # Создаем дисперсию
+
+    task = 'Случайная величина X распределена нормально с математическим ожиданием M(X) = ' + str(
+        M) + ' и дисперсией D(X) = ' + str(D) + '. Тогда ее плотность распределения вероятностей имеет вид:'
+
+    paragraph = document.add_paragraph()
+
+    run = paragraph.add_run('13. ')
+    ran = paragraph.add_run(task)
+    run.style = style_task
+    run.bold = True
+    printTask13(document, M, D)
+    paragraph = document.add_paragraph()
 
     document.save('text.docx')
