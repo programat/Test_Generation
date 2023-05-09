@@ -1,6 +1,6 @@
 # библиотеки для интерфейса
 import tkinter as tk
-from tkinter import ttk
+from tkinter import ttk, messagebox
 import os
 
 # библиотеки для работы с word
@@ -32,20 +32,6 @@ from tasks.task13helpfunc import printTask13
 #     font.name = 'Times New Roman'
 #     font.size = docx.shared.Pt(16)
 #     paragraph.alignment = docx.enum.text.WD_ALIGN_PARAGRAPH.JUSTIFY
-
-def table_style():
-    # table.style = 'Table Grid'
-    table.alignment = docx.enum.table.WD_TABLE_ALIGNMENT.CENTER
-
-    table_font = table.style.font
-    table_font.name = 'Times New Roman'
-    table_font.size = docx.shared.Pt(16)
-
-    for row in table.rows:
-        for cell in row.cells:
-            cell_font = cell.paragraphs[0].style.font
-            cell_font.name = 'Times New Roman'
-            cell_font.size = docx.shared.Pt(16)
 
 tasks = {
     1: 'Игральная кость бросается три раза. Тогда вероятность того, что сумма выпавших очков не меньше шестнадцати, равна: ',
@@ -119,7 +105,7 @@ def t3():
         for i in range(1, len(ans)):
             for j in range(i + 1, len(ans)):
                 if abs(ans[i] - ans[j]) <= 0.01:
-                    print(ans[i], ans[j])
+                    # print(ans[i], ans[j])
                     flag = 0
     # print('finally')
     # print(ans)
@@ -266,8 +252,23 @@ def t7():
     return ans
 
 def create_main_window():
+
+    def validate_num_tests():
+        try:
+            num_tests = int(num_tests_entry.get())
+            if num_tests < 1 or num_tests > 200:
+                raise ValueError
+        except ValueError:
+            num_tests_entry.config(highlightbackground='red', highlightcolor='red')
+            messagebox.showerror(title="Ошибка", message="Недопустимое значение. Введите число от 1 до 100.")
+            return False
+        else:
+            num_tests_entry.config(highlightbackground='green', highlightcolor='green')
+            return True
+
+
     root = tk.Tk()
-    root.geometry("300x200")
+    root.geometry("400x400")
     root.title("Генерация тестов")
 
     # Создаем заголовок
@@ -277,6 +278,10 @@ def create_main_window():
     # Создаем текстовое поле для ввода количества тестов
     num_tests_label = tk.Label(root, text="Количество тестов:")
     num_tests_label.pack(pady=10)
+
+    # validate_cmd = (root.register(validate_num_tests), '%P')
+    # num_tests_entry = tk.Entry(root, validate="key", validatecommand=validate_cmd)
+    global num_tests_entry
     num_tests_entry = tk.Entry(root)
     num_tests_entry.pack()
 
@@ -286,19 +291,48 @@ def create_main_window():
     button_style.map("Custom.TButton", background=[("active", "darkgray")], foreground=[("active", "white")])
 
     # Создаем кнопку для генерации тестов
-    generate_tests_button = ttk.Button(root, text="Сгенерировать тесты", style="Custom.TButton")
+    generate_tests_button = ttk.Button(root, text="Сгенерировать тесты", style="Custom.TButton", command=lambda: generate_tests(int(num_tests_entry.get())))
+    generate_tests_button.bind("<ButtonPress>", lambda event: validate_num_tests())
     generate_tests_button.pack(pady=10)
 
     # Создаем кнопку для скачивания файла
-    download_file_button = ttk.Button(root, text="Скачать файл", style="Custom.TButton")
+    download_file_button = ttk.Button(root, text="Скачать примеры", style="Custom.TButton")
     download_file_button.pack(pady=10)
+
+    def about():
+        messagebox.showinfo(title="О программе",
+                           message="Версия 0.3\n\nАвторы:\nКолычев Егор\nКорнилов Кирилл\nПолевая Полина",
+                           detail="© MIT License. 2023.")
+
+
+    menu = tk.Menu(root)
+    root.config(menu=menu)
+
+    help_menu = tk.Menu(menu, tearoff=False)
+    menu.add_cascade(label="Помощь", menu=help_menu)
+    help_menu.add_command(label="О программе", command=about)
 
     # Показываем главное окно
     root.mainloop()
 
+def generate_tests(num_tests):
 
-if __name__ == '__main__':
-    create_main_window()
+    def table_style():
+        # table.style = 'Table Grid'
+        table.alignment = docx.enum.table.WD_TABLE_ALIGNMENT.CENTER
+
+        table_font = table.style.font
+        table_font.name = 'Times New Roman'
+        table_font.size = docx.shared.Pt(16)
+
+        for row in table.rows:
+            for cell in row.cells:
+                cell_font = cell.paragraphs[0].style.font
+                cell_font.name = 'Times New Roman'
+                cell_font.size = docx.shared.Pt(16)
+
+    # num_tests = int(input('Количество тестов для генерации: '))
+
     document = docx.Document()
 
     # задание стиля для header
@@ -307,308 +341,332 @@ if __name__ == '__main__':
     style_header.font.size = docx.shared.Pt(16)
     style_header.font.italic = True
 
-    # добавление параграфа с вариантом
-    paragraph = document.add_paragraph()
-    run = paragraph.add_run('Вариант 4')
-    run.style = style_header
-    run.font.bold = True
-    paragraph.alignment = docx.enum.text.WD_ALIGN_PARAGRAPH.CENTER
-
-    # добавление блока с фамилией и группой
-    paragraph = document.add_paragraph()
-    run = paragraph.add_run('\nФамилия ________________________ Группа __________')
-    run.style = style_header
-    paragraph.alignment = docx.enum.text.WD_ALIGN_PARAGRAPH.CENTER
-
     # задание стиля для заданий
     style_task = document.styles.add_style('f_tasks', docx.enum.style.WD_STYLE_TYPE.CHARACTER)
     style_task.font.name = 'Times New Roman'
     style_task.font.size = docx.shared.Pt(16)
 
-    # блок заданий
+    for i in range(1, num_tests+1):
+        # добавление параграфа с вариантом
+        paragraph = document.add_paragraph()
+        run = paragraph.add_run(f'Вариант 4 (№{i})')
+        run.style = style_header
+        run.font.bold = True
+        paragraph.alignment = docx.enum.text.WD_ALIGN_PARAGRAPH.CENTER
 
-    # задание 1
-    paragraph = document.add_paragraph()
-    run = paragraph.add_run('1. ')
-    run.style = style_task
-    run.bold = True
+        # добавление блока с фамилией и группой
+        paragraph = document.add_paragraph()
+        run = paragraph.add_run('\nФамилия ________________________ Группа __________')
+        run.style = style_header
+        paragraph.alignment = docx.enum.text.WD_ALIGN_PARAGRAPH.CENTER
 
-    task = t1()
-    run = paragraph.add_run(task[0])
-    run.style = style_task
+        # блок заданий
 
-    task_ans = task[1:]
-    random.shuffle(task_ans)
+        # задание 1
+        paragraph = document.add_paragraph()
+        run = paragraph.add_run('1. ')
+        run.style = style_task
+        run.bold = True
 
-    table = document.add_table(rows=1, cols=4)
-    table_style()
+        task = t1()
+        run = paragraph.add_run(task[0])
+        run.style = style_task
 
-    row_cells = table.rows[0].cells
-    row_cells[0].text = f"а) {task_ans[0]};"
-    row_cells[1].text = f"б) {task_ans[1]};"
-    row_cells[2].text = f"в) {task_ans[2]};"
-    row_cells[3].text = f"г) {task_ans[3]}."
+        task_ans = task[1:]
+        random.shuffle(task_ans)
 
-    # задание 2
-    paragraph = document.add_paragraph()
-    run = paragraph.add_run('2. ')
-    run.style = style_task
-    run.bold = True
+        table = document.add_table(rows=1, cols=4)
+        table_style()
 
-    run = paragraph.add_run(tasks[2])
-    run.style = style_task
+        row_cells = table.rows[0].cells
+        row_cells[0].text = f"а) {task_ans[0]};"
+        row_cells[1].text = f"б) {task_ans[1]};"
+        row_cells[2].text = f"в) {task_ans[2]};"
+        row_cells[3].text = f"г) {task_ans[3]}."
 
-    task_ans = [f'1/2\u03C0', f'2/\u03C0', f'\u03C0/36', f'\u221A3/4']
-    random.shuffle(task_ans)
+        # задание 2
+        paragraph = document.add_paragraph()
+        run = paragraph.add_run('2. ')
+        run.style = style_task
+        run.bold = True
 
-    table = document.add_table(rows=1, cols=4)
-    table_style()
-    row_cells = table.rows[0].cells
-    row_cells[0].text = f"а) {task_ans[0]};"
-    row_cells[1].text = f"б) {task_ans[1]};"
-    row_cells[2].text = f"в) {task_ans[2]};"
-    row_cells[3].text = f"г) {task_ans[3]}."
+        run = paragraph.add_run(tasks[2])
+        run.style = style_task
 
-    # задание 3
-    paragraph = document.add_paragraph()
-    run = paragraph.add_run('3. ')
-    run.style = style_task
-    run.bold = True
+        task_ans = [f'1/2\u03C0', f'2/\u03C0', f'\u03C0/36', f'\u221A3/4']
+        random.shuffle(task_ans)
 
-    task = t3()
-    run = paragraph.add_run(task[0])
-    run.style = style_task
+        table = document.add_table(rows=1, cols=4)
+        table_style()
+        row_cells = table.rows[0].cells
+        row_cells[0].text = f"а) {task_ans[0]};"
+        row_cells[1].text = f"б) {task_ans[1]};"
+        row_cells[2].text = f"в) {task_ans[2]};"
+        row_cells[3].text = f"г) {task_ans[3]}."
 
-    task_ans = task[1:]
-    random.shuffle(task_ans)
+        # задание 3
+        paragraph = document.add_paragraph()
+        run = paragraph.add_run('3. ')
+        run.style = style_task
+        run.bold = True
 
-    table = document.add_table(rows=1, cols=4)
-    table_style()
-    row_cells = table.rows[0].cells
-    row_cells[0].text = f"а) {task_ans[0]};"
-    row_cells[1].text = f"б) {task_ans[1]};"
-    row_cells[2].text = f"в) {task_ans[2]};"
-    row_cells[3].text = f"г) {task_ans[3]}."
+        task = t3()
+        run = paragraph.add_run(task[0])
+        run.style = style_task
 
-    # задание 4
-    paragraph = document.add_paragraph()
-    run = paragraph.add_run('4. ')
-    run.style = style_task
-    run.bold = True
+        task_ans = task[1:]
+        random.shuffle(task_ans)
 
-    task = t4()
-    run = paragraph.add_run(task[0])
-    run.style = style_task
-    task_ans = task[1:]
-    random.shuffle(task_ans)
+        table = document.add_table(rows=1, cols=4)
+        table_style()
+        row_cells = table.rows[0].cells
+        row_cells[0].text = f"а) {task_ans[0]};"
+        row_cells[1].text = f"б) {task_ans[1]};"
+        row_cells[2].text = f"в) {task_ans[2]};"
+        row_cells[3].text = f"г) {task_ans[3]}."
 
-    table = document.add_table(rows=1, cols=4)
-    table_style()
-    row_cells = table.rows[0].cells
-    row_cells[0].text = f"а) {task_ans[0]};"
-    row_cells[1].text = f"б) {task_ans[1]};"
-    row_cells[2].text = f"в) {task_ans[2]};"
-    row_cells[3].text = f"г) {task_ans[3]}."
+        # задание 4
+        paragraph = document.add_paragraph()
+        run = paragraph.add_run('4. ')
+        run.style = style_task
+        run.bold = True
 
-    # задание 5
-    paragraph = document.add_paragraph()
-    run = paragraph.add_run('5. ')
-    run.style = style_task
-    run.bold = True
+        task = t4()
+        run = paragraph.add_run(task[0])
+        run.style = style_task
+        task_ans = task[1:]
+        random.shuffle(task_ans)
 
-    task = t5()
-    run = paragraph.add_run(task[0])
-    run.style = style_task
-    task_ans = task[1:]
-    random.shuffle(task_ans)
+        table = document.add_table(rows=1, cols=4)
+        table_style()
+        row_cells = table.rows[0].cells
+        row_cells[0].text = f"а) {task_ans[0]};"
+        row_cells[1].text = f"б) {task_ans[1]};"
+        row_cells[2].text = f"в) {task_ans[2]};"
+        row_cells[3].text = f"г) {task_ans[3]}."
 
-    table = document.add_table(rows=1, cols=4)
-    table_style()
-    row_cells = table.rows[0].cells
-    row_cells[0].text = f"а) {task_ans[0]};"
-    row_cells[1].text = f"б) {task_ans[1]};"
-    row_cells[2].text = f"в) {task_ans[2]};"
-    row_cells[3].text = f"г) {task_ans[3]}."
+        # задание 5
+        paragraph = document.add_paragraph()
+        run = paragraph.add_run('5. ')
+        run.style = style_task
+        run.bold = True
 
-    # задание 6
-    paragraph = document.add_paragraph()
-    run = paragraph.add_run('6. ')
-    run.style = style_task
-    run.bold = True
+        task = t5()
+        run = paragraph.add_run(task[0])
+        run.style = style_task
+        task_ans = task[1:]
+        random.shuffle(task_ans)
 
-    run = paragraph.add_run(tasks[6][0])
-    run.style = style_task
+        table = document.add_table(rows=1, cols=4)
+        table_style()
+        row_cells = table.rows[0].cells
+        row_cells[0].text = f"а) {task_ans[0]};"
+        row_cells[1].text = f"б) {task_ans[1]};"
+        row_cells[2].text = f"в) {task_ans[2]};"
+        row_cells[3].text = f"г) {task_ans[3]}."
 
-    task_ans = t6()
+        # задание 6
+        paragraph = document.add_paragraph()
+        run = paragraph.add_run('6. ')
+        run.style = style_task
+        run.bold = True
 
-    table = document.add_table(rows=2, cols=5)
-    table.style = 'Table Grid'
+        run = paragraph.add_run(tasks[6][0])
+        run.style = style_task
 
-    row_cells = table.rows[0].cells
-    p = row_cells[0].paragraphs[0]
-    run = p.add_run()
-    t = OxmlElement('w:t')
-    t.set(qn('xml:space'), 'preserve')
-    t.text = 'x\u1D62'
-    run._r.append(t)
-    row_cells[1].text = f"1"
-    row_cells[2].text = f"2"
-    row_cells[3].text = f"4"
-    row_cells[4].text = f"6"
+        task_ans = t6()
 
-    row_cells = table.rows[1].cells
-    p = row_cells[0].paragraphs[0]
-    run = p.add_run()
-    t = OxmlElement('w:t')
-    t.set(qn('xml:space'), 'preserve')
-    t.text = 'p\u1D62'
-    run._r.append(t)
-    row_cells[1].text = f"{task_ans[0][0]}"
-    row_cells[2].text = f"{task_ans[0][1]}"
-    row_cells[3].text = f"{task_ans[0][2]}"
-    row_cells[4].text = f"{task_ans[0][3]}"
+        table = document.add_table(rows=2, cols=5)
+        table.style = 'Table Grid'
 
-    table.alignment = docx.enum.table.WD_TABLE_ALIGNMENT.CENTER  # располагаем таблицу по центру
-    for row in table.rows:
-        for cell in row.cells:
-            cell.width = docx.shared.Inches(0.8)
-    table.autofit = False
-    for row in table.rows:
-        for cell in row.cells:
-            paragraphs = cell.paragraphs
-            for paragraph in paragraphs:
-                paragraph.alignment = docx.enum.text.WD_ALIGN_PARAGRAPH.CENTER  # устанавливаем выравнивание ячеек по центру по вертикали
-                for run in paragraph.runs:
-                    run.font.bold = False  # убираем жирный шрифт
+        row_cells = table.rows[0].cells
+        p = row_cells[0].paragraphs[0]
+        run = p.add_run()
+        t = OxmlElement('w:t')
+        t.set(qn('xml:space'), 'preserve')
+        t.text = 'x\u1D62'
+        run._r.append(t)
+        row_cells[1].text = f"1"
+        row_cells[2].text = f"2"
+        row_cells[3].text = f"4"
+        row_cells[4].text = f"6"
 
-    paragraph = document.add_paragraph()
-    task2 = tasks[6][1].split('P(<)')
-    run = paragraph.add_run("\n   " + task2[0])
-    run.style = style_task
-    run = paragraph.add_run('P')
-    run.font.italic = True
-    run = paragraph.add_run(f"(1 < ")
-    run.font.italic = False
-    run = paragraph.add_run("X")
-    run.font.italic = True
-    run=paragraph.add_run(f' \u2264 4)')
-    run.font.italic = False
-    run = paragraph.add_run(task2[1])
+        row_cells = table.rows[1].cells
+        p = row_cells[0].paragraphs[0]
+        run = p.add_run()
+        t = OxmlElement('w:t')
+        t.set(qn('xml:space'), 'preserve')
+        t.text = 'p\u1D62'
+        run._r.append(t)
+        row_cells[1].text = f"{task_ans[0][0]}"
+        row_cells[2].text = f"{task_ans[0][1]}"
+        row_cells[3].text = f"{task_ans[0][2]}"
+        row_cells[4].text = f"{task_ans[0][3]}"
 
-    task_ans = task_ans[1:]
-    random.shuffle(task_ans)
+        table.alignment = docx.enum.table.WD_TABLE_ALIGNMENT.CENTER  # располагаем таблицу по центру
+        for row in table.rows:
+            for cell in row.cells:
+                cell.width = docx.shared.Inches(0.8)
+        table.autofit = False
+        for row in table.rows:
+            for cell in row.cells:
+                paragraphs = cell.paragraphs
+                for paragraph in paragraphs:
+                    paragraph.alignment = docx.enum.text.WD_ALIGN_PARAGRAPH.CENTER  # устанавливаем выравнивание ячеек по центру по вертикали
+                    for run in paragraph.runs:
+                        run.font.bold = False  # убираем жирный шрифт
 
-    table = document.add_table(rows=1, cols=4)
-    table_style()
-    row_cells = table.rows[0].cells
-    row_cells[0].text = f"а) {task_ans[0]};"
-    row_cells[1].text = f"б) {task_ans[1]};"
-    row_cells[2].text = f"в) {task_ans[2]};"
-    row_cells[3].text = f"г) {task_ans[3]}."
+        paragraph = document.add_paragraph()
+        task2 = tasks[6][1].split('P(<)')
+        run = paragraph.add_run("\n   " + task2[0])
+        run.style = style_task
+        run = paragraph.add_run('P')
+        run.font.italic = True
+        run = paragraph.add_run(f"(1 < ")
+        run.font.italic = False
+        run = paragraph.add_run("X")
+        run.font.italic = True
+        run = paragraph.add_run(f' \u2264 4)')
+        run.font.italic = False
+        run = paragraph.add_run(task2[1])
 
-    # задание 7
-    paragraph = document.add_paragraph()
-    run = paragraph.add_run('7. ')
-    run.style = style_task
-    run.bold = True
+        task_ans = task_ans[1:]
+        random.shuffle(task_ans)
 
-    run = paragraph.add_run(tasks[7][0])
-    run.style = style_task
+        table = document.add_table(rows=1, cols=4)
+        table_style()
+        row_cells = table.rows[0].cells
+        row_cells[0].text = f"а) {task_ans[0]};"
+        row_cells[1].text = f"б) {task_ans[1]};"
+        row_cells[2].text = f"в) {task_ans[2]};"
+        row_cells[3].text = f"г) {task_ans[3]}."
 
-    task_ans = t7()
+        # задание 7
+        paragraph = document.add_paragraph()
+        run = paragraph.add_run('7. ')
+        run.style = style_task
+        run.bold = True
 
-    table = document.add_table(rows=2, cols=6)
-    table.style = 'Table Grid'
+        run = paragraph.add_run(tasks[7][0])
+        run.style = style_task
 
-    row_cells = table.rows[0].cells
-    p = row_cells[0].paragraphs[0]
-    run = p.add_run()
-    t = OxmlElement('w:t')
-    t.set(qn('xml:space'), 'preserve')
-    t.text = 'x\u1D62'
-    run._r.append(t)
-    row_cells[1].text = f"1"
-    row_cells[2].text = f"3"
-    row_cells[3].text = f"5"
-    row_cells[4].text = f"7"
-    row_cells[5].text = f"9"
+        task_ans = t7()
 
-    row_cells = table.rows[1].cells
-    p = row_cells[0].paragraphs[0]
-    run = p.add_run()
-    t = OxmlElement('w:t')
-    t.set(qn('xml:space'), 'preserve')
-    t.text = 'p\u1D62'
-    run._r.append(t)
-    row_cells[1].text = f"{task_ans[0][0]}"
-    row_cells[2].text = f"{task_ans[0][1]}"
-    row_cells[3].text = f"{task_ans[0][2]}"
-    row_cells[4].text = f"{task_ans[0][3]}"
-    row_cells[5].text = f"{task_ans[0][4]}"
+        table = document.add_table(rows=2, cols=6)
+        table.style = 'Table Grid'
 
-    table.alignment = docx.enum.table.WD_TABLE_ALIGNMENT.CENTER  # располагаем таблицу по центру
-    for row in table.rows:
-        for cell in row.cells:
-            cell.width = docx.shared.Inches(0.8)
-    table.autofit = False
-    for row in table.rows:
-        for cell in row.cells:
-            paragraphs = cell.paragraphs
-            for paragraph in paragraphs:
-                paragraph.alignment = docx.enum.text.WD_ALIGN_PARAGRAPH.CENTER  # устанавливаем выравнивание ячеек по центру по вертикали
-                for run in paragraph.runs:
-                    run.font.bold = False  # убираем жирный шрифт
+        row_cells = table.rows[0].cells
+        p = row_cells[0].paragraphs[0]
+        run = p.add_run()
+        t = OxmlElement('w:t')
+        t.set(qn('xml:space'), 'preserve')
+        t.text = 'x\u1D62'
+        run._r.append(t)
+        row_cells[1].text = f"1"
+        row_cells[2].text = f"3"
+        row_cells[3].text = f"5"
+        row_cells[4].text = f"7"
+        row_cells[5].text = f"9"
 
-    paragraph = document.add_paragraph()
-    task2 = tasks[7][1].split('P(<)')
-    run = paragraph.add_run("\n   " + task2[0])
-    run.style = style_task
-    run = paragraph.add_run('P')
-    run.font.italic = True
-    run = paragraph.add_run(f"(1 \u2264 ")
-    run.font.italic = False
-    run = paragraph.add_run("X")
-    run.font.italic = True
-    run = paragraph.add_run(f' \u2264 4)')
-    run.font.italic = False
-    run = paragraph.add_run(task2[1])
+        row_cells = table.rows[1].cells
+        p = row_cells[0].paragraphs[0]
+        run = p.add_run()
+        t = OxmlElement('w:t')
+        t.set(qn('xml:space'), 'preserve')
+        t.text = 'p\u1D62'
+        run._r.append(t)
+        row_cells[1].text = f"{task_ans[0][0]}"
+        row_cells[2].text = f"{task_ans[0][1]}"
+        row_cells[3].text = f"{task_ans[0][2]}"
+        row_cells[4].text = f"{task_ans[0][3]}"
+        row_cells[5].text = f"{task_ans[0][4]}"
 
-    task_ans = task_ans[1:]
-    random.shuffle(task_ans)
+        table.alignment = docx.enum.table.WD_TABLE_ALIGNMENT.CENTER  # располагаем таблицу по центру
+        for row in table.rows:
+            for cell in row.cells:
+                cell.width = docx.shared.Inches(0.8)
+        table.autofit = False
+        for row in table.rows:
+            for cell in row.cells:
+                paragraphs = cell.paragraphs
+                for paragraph in paragraphs:
+                    paragraph.alignment = docx.enum.text.WD_ALIGN_PARAGRAPH.CENTER  # устанавливаем выравнивание ячеек по центру по вертикали
+                    for run in paragraph.runs:
+                        run.font.bold = False  # убираем жирный шрифт
 
-    table = document.add_table(rows=2, cols=2)
-    table_style()
-    row_cells = table.rows[0].cells
-    row_cells[0].text = f"а) a = {task_ans[0][0]}; b = {task_ans[0][1]}; c = {task_ans[0][2]};"
-    row_cells[1].text = f"б) a = {task_ans[1][0]}; b = {task_ans[1][1]}; c = {task_ans[1][2]};"
-    row_cells = table.rows[1].cells
-    row_cells[0].text = f"в) a = {task_ans[2][0]}; b = {task_ans[2][1]}; c = {task_ans[2][2]};"
-    row_cells[1].text = f"г) a = {task_ans[3][0]}; b = {task_ans[3][1]}; c = {task_ans[3][2]}."
+        paragraph = document.add_paragraph()
+        task2 = tasks[7][1].split('P(<)')
+        run = paragraph.add_run("\n   " + task2[0])
+        run.style = style_task
+        run = paragraph.add_run('P')
+        run.font.italic = True
+        run = paragraph.add_run(f"(1 \u2264 ")
+        run.font.italic = False
+        run = paragraph.add_run("X")
+        run.font.italic = True
+        run = paragraph.add_run(f' \u2264 4)')
+        run.font.italic = False
+        run = paragraph.add_run(task2[1])
 
-    # задание 8
-    paragraph = document.add_paragraph()
-    task = "Непрерывная случайная величина X задана плотностью распределения вероятностей:\t"
-    run = paragraph.add_run('8. ')
-    ran = paragraph.add_run(task)
-    run.style = style_task
-    run.bold = True
-    printTask8(document)
-    paragraph = document.add_paragraph()
+        task_ans = task_ans[1:]
+        random.shuffle(task_ans)
 
-    # задание 13
-    M = random.randint(1, 31)  # Создаем мат ожидание
-    D = (random.randint(1, 10)) ** 2  # Создаем дисперсию
+        table = document.add_table(rows=2, cols=2)
+        table_style()
+        row_cells = table.rows[0].cells
+        row_cells[0].text = f"а) a = {task_ans[0][0]}; b = {task_ans[0][1]}; c = {task_ans[0][2]};"
+        row_cells[1].text = f"б) a = {task_ans[1][0]}; b = {task_ans[1][1]}; c = {task_ans[1][2]};"
+        row_cells = table.rows[1].cells
+        row_cells[0].text = f"в) a = {task_ans[2][0]}; b = {task_ans[2][1]}; c = {task_ans[2][2]};"
+        row_cells[1].text = f"г) a = {task_ans[3][0]}; b = {task_ans[3][1]}; c = {task_ans[3][2]}."
 
-    task = 'Случайная величина X распределена нормально с математическим ожиданием M(X) = ' + str(
-        M) + ' и дисперсией D(X) = ' + str(D) + '. Тогда ее плотность распределения вероятностей имеет вид:'
+        # задание 8
+        paragraph = document.add_paragraph()
+        task = "Непрерывная случайная величина X задана плотностью распределения вероятностей:\t"
+        run = paragraph.add_run('8. ')
+        ran = paragraph.add_run(task)
+        run.style = style_task
+        run.bold = True
+        printTask8(document)
+        paragraph = document.add_paragraph()
 
-    paragraph = document.add_paragraph()
+        # задание 13
+        M = random.randint(1, 31)  # Создаем мат ожидание
+        D = (random.randint(1, 10)) ** 2  # Создаем дисперсию
 
-    run = paragraph.add_run('13. ')
-    ran = paragraph.add_run(task)
-    run.style = style_task
-    run.bold = True
-    printTask13(document, M, D)
-    paragraph = document.add_paragraph()
+        task = 'Случайная величина X распределена нормально с математическим ожиданием M(X) = ' + str(
+            M) + ' и дисперсией D(X) = ' + str(D) + '. Тогда ее плотность распределения вероятностей имеет вид:'
+
+        paragraph = document.add_paragraph()
+
+        run = paragraph.add_run('13. ')
+        ran = paragraph.add_run(task)
+        run.style = style_task
+        run.bold = True
+        printTask13(document, M, D)
+        paragraph = document.add_paragraph()
+
+        # перенос страницы
+        if i != num_tests:
+            document.add_page_break()
+        else:
+            print('Тесты сгенерены')
+            messagebox.showinfo(title="Успешно", message=f"Сгенерировано тестов: {num_tests_entry.get()}")
 
     document.save('text.docx')
+    # document.save(os.path.join(save_folder, 'text.docx'))
+
+
+if __name__ == '__main__':
+    # # Путь к папке с проектом
+    # project_folder = os.path.dirname(os.path.abspath(__file__))
+    #
+    # # Путь к папке для сохранения файлов
+    # save_folder = os.path.join(project_folder, "сформированные файлы")
+    #
+    # # Создаем папку, если она еще не существует
+    # if not os.path.exists(save_folder):
+    #     os.makedirs(save_folder)
+
+    create_main_window()
+    # generate_tests(3)
