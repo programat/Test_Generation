@@ -14,9 +14,11 @@ import random
 import fractions as fr
 
 # подключение внешних файлов
-from tasks.task8helpfunc import printTask8
-# from tasks.task9helpfunc import printTask9
-from tasks.task13helpfunc import printTask13
+from task8helpfunc import printTask8
+from task9helpfunc import printTask9
+from task10helpfunc import printTask10
+from task12helpfunc import printTask12
+from task13helpfunc import printTask13
 
 # def style_header():
 #     # изменение свойств шрифта и размера шрифта
