@@ -378,7 +378,8 @@ def generate_tests(num_tests):
 
     # num_tests = int(input('Количество тестов для генерации: '))
 
-    document = docx.Document()
+    document = docx.Document()  # документ с практическими тестами
+    doc_ans = docx.Document()  # документ с ответами на практический тест
 
     # задание стиля для header
     style_header = document.styles.add_style('f_header', docx.enum.style.WD_STYLE_TYPE.CHARACTER)
@@ -392,6 +393,7 @@ def generate_tests(num_tests):
     style_task.font.size = docx.shared.Pt(16)
 
     for i in range(1, num_tests+1):
+        answers[i] = dict()
         # добавление параграфа с вариантом
         paragraph = document.add_paragraph()
         run = paragraph.add_run(f'Вариант 4 (№{i})')
@@ -418,7 +420,14 @@ def generate_tests(num_tests):
         run.style = style_task
 
         task_ans = task[1:]
+        p_find = task_ans[0]
         random.shuffle(task_ans)
+
+        # print(p_find, task_ans, chr(task_ans.index(p_find)+1072).capitalize())
+        answers[i][1] = chr(task_ans.index(p_find)+1072).capitalize()
+        # print(answers)
+
+
 
         table = document.add_table(rows=1, cols=4)
         table_style()
@@ -439,7 +448,9 @@ def generate_tests(num_tests):
         run.style = style_task
 
         task_ans = [f'1/2\u03C0', f'2/\u03C0', f'\u03C0/36', f'\u221A3/4']
+        p_find = task_ans[0]
         random.shuffle(task_ans)
+        answers[i][2] = chr(task_ans.index(p_find) + 1072).capitalize()
 
         table = document.add_table(rows=1, cols=4)
         table_style()
@@ -460,7 +471,9 @@ def generate_tests(num_tests):
         run.style = style_task
 
         task_ans = task[1:]
+        p_find = task_ans[0]
         random.shuffle(task_ans)
+        answers[i][3] = chr(task_ans.index(p_find) + 1072).capitalize()
 
         table = document.add_table(rows=1, cols=4)
         table_style()
@@ -480,7 +493,9 @@ def generate_tests(num_tests):
         run = paragraph.add_run(task[0])
         run.style = style_task
         task_ans = task[1:]
+        p_find = task_ans[0]
         random.shuffle(task_ans)
+        answers[i][4] = chr(task_ans.index(p_find) + 1072).capitalize()
 
         table = document.add_table(rows=1, cols=4)
         table_style()
@@ -500,7 +515,9 @@ def generate_tests(num_tests):
         run = paragraph.add_run(task[0])
         run.style = style_task
         task_ans = task[1:]
+        p_find = task_ans[0]
         random.shuffle(task_ans)
+        answers[i][5] = chr(task_ans.index(p_find) + 1072).capitalize()
 
         table = document.add_table(rows=1, cols=4)
         table_style()
@@ -576,7 +593,9 @@ def generate_tests(num_tests):
         run = paragraph.add_run(task2[1])
 
         task_ans = task_ans[1:]
+        p_find = task_ans[0]
         random.shuffle(task_ans)
+        answers[i][6] = chr(task_ans.index(p_find) + 1072).capitalize()
 
         table = document.add_table(rows=1, cols=4)
         table_style()
@@ -654,7 +673,9 @@ def generate_tests(num_tests):
         run = paragraph.add_run(task2[1])
 
         task_ans = task_ans[1:]
+        p_find = task_ans[0]
         random.shuffle(task_ans)
+        answers[i][1] = chr(task_ans.index(p_find) + 1072).capitalize()
 
         table = document.add_table(rows=2, cols=2)
         table_style()
@@ -800,6 +821,7 @@ def generate_tests(num_tests):
             messagebox.showinfo(title="Успешно", message=f"Сгенерировано тестов: {num_tests_entry.get()}")
 
     document.save('text.docx')
+    print(answers)
     # document.save(os.path.join(save_folder, 'text.docx'))
 
 
