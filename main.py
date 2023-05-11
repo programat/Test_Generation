@@ -15,7 +15,9 @@ import fractions as fr
 
 # подключение внешних файлов
 from tasks.task8helpfunc import printTask8
-# from tasks.task9helpfunc import printTask9
+from tasks.task9helpfunc import printTask9
+from tasks.task10helpfunc import printTask10
+from tasks.task12helpfunc import printTask12
 from tasks.task13helpfunc import printTask13
 
 # def style_header():
@@ -40,7 +42,8 @@ tasks = {
     4: 'Предприятие выплачивает 44 % всех зарплат разнорабочим, а 56 % – остальным. Вероятность того, что разнорабочий не получит зарплату в срок, равна 0,2; а для остальных эта вероятность составляет 0,1. Тогда вероятность того, что очередная зарплата будет выдана в срок, равна:',
     5: 'Имеются четыре коробки, в которых сидят по 3 белых и по 7 черных котят, и шесть коробок, в которых сидят по 8 белых и по 2 черных котенка. Из наудачу взятой коробки вынимается один котенок, который оказался белым. Тогда вероятность того, что этого котенка достали из первой серии коробок, равна:',
     6: ('Дискретная случайная величина X задана законом распределения вероятностей:', 'Тогда вероятность P(<) равна:'),
-    7: ('Дискретная случайная величина X задана законом распределения вероятностей:', 'И вероятность P(<) = 0,6. Тогда значения a, b и c могут быть равны:')
+    7: ('Дискретная случайная величина X задана законом распределения вероятностей:', 'И вероятность P(<) = 0,6. Тогда значения a, b и c могут быть равны:'),
+    11: ('Математическое ожидание дискретной случайной величины X,', 'заданной законом распределения вероятностей, равно 4,7. Тогда значение вероятности p2 равно:')
 }
 
 answers = dict()
@@ -107,6 +110,9 @@ def t3():
                 if abs(ans[i] - ans[j]) <= 0.01:
                     # print(ans[i], ans[j])
                     flag = 0
+                    break
+            if not flag:
+                break
     # print('finally')
     # print(ans)
     return ans
@@ -218,6 +224,9 @@ def t6():
                 if abs(ans[i] - ans[j]) <= 0.03:
                     # print(ans[i], ans[j])
                     flag = 0
+                    break
+            if not flag:
+                break
     # print('finally')
     # print(ans)
     return ans
@@ -247,6 +256,42 @@ def t7():
             for j in range(i + 1, len(ans)):
                 if ans[i] == ans[j]:
                     flag = 0
+    # print('finally')
+    # print(ans)
+    return ans
+
+def t11():
+    flag = 0
+    while not flag:
+        flag = 1
+
+        p1 = round(random.uniform(0.09, 0.8), 2)
+        p2 = round(1 - p1, 2)
+
+        if p1 + p2 != 1:
+            flag = 0
+            continue
+
+        # print(p1, p2)
+
+        x1, x2 = 2,5
+        M = round(p1 * x1 + p2 * x2, 4)
+
+        p = p2
+        w1 = p1
+        w2 = round(random.uniform(0.09, 0.8), 2)
+        w3 = round(random.uniform(0.09, 0.8), 2)
+
+        ans = [(p1, p2, M), p, w1, w2, w3]
+        # print('iteration', ans)
+        for i in range(1, len(ans)):
+            for j in range(i + 1, len(ans)):
+                if abs(ans[i] - ans[j]) <= 0.01 or ans[i] > 0.95 or ans[i] < 0.1 or ans[i] == ans[j] or len(
+                        str(ans[i])) > 6:
+                    flag = 0
+                    break
+            if not flag:
+                break
     # print('finally')
     # print(ans)
     return ans
@@ -624,11 +669,112 @@ def generate_tests(num_tests):
         paragraph = document.add_paragraph()
         task = "Непрерывная случайная величина X задана плотностью распределения вероятностей:\t"
         run = paragraph.add_run('8. ')
-        ran = paragraph.add_run(task)
+        run.bold = True
+        run = paragraph.add_run(task)
+        run.style = style_task
+        run.bold = False
+        printTask8(document)
+        # paragraph = document.add_paragraph()
+
+        # задание 9
+        paragraph = document.add_paragraph()
+        task = "Непрерывная случайная величина X задана плотностью распределения вероятностей:\t"
+        run = paragraph.add_run('9. ')
+        run.bold = True
+        run = paragraph.add_run(task)
+        run.bold = False
+        run.style = style_task
+        # printTask9(document)
+        # paragraph = document.add_paragraph()
+
+        # задание 10
+        paragraph = document.add_paragraph()
+        task = "Непрерывная случайная величина X задана функцией распределения вероятностей:\t"
+        run = paragraph.add_run('10. ')
+        run.bold = True
+        run = paragraph.add_run(task)
+        run.bold = False
+        run.style = style_task
+        printTask10(document)
+        # paragraph = document.add_paragraph()
+
+        # задание 11
+        paragraph = document.add_paragraph()
+        run = paragraph.add_run('11. ')
         run.style = style_task
         run.bold = True
-        printTask8(document)
+
+        run = paragraph.add_run(f"{tasks[11][0]}\t")
+        run.style = style_task
+
+        task_ans = t11()
+
+        table = document.add_table(rows=2, cols=3)
+        table.style = 'Table Grid'
+
+        row_cells = table.rows[0].cells
+        p = row_cells[0].paragraphs[0]
+        run = p.add_run()
+        t = OxmlElement('w:t')
+        t.set(qn('xml:space'), 'preserve')
+        t.text = 'x\u1D62'
+        run._r.append(t)
+        row_cells[1].text = f"2"
+        row_cells[2].text = f"5"
+
+        row_cells = table.rows[1].cells
+        p = row_cells[0].paragraphs[0]
+        run = p.add_run()
+        t = OxmlElement('w:t')
+        t.set(qn('xml:space'), 'preserve')
+        t.text = 'p\u1D62'
+        run._r.append(t)
+        row_cells[1].text = f"\u0070\u2081"
+        row_cells[2].text = f"\u0070\u2082"
+
+        table.alignment = docx.enum.table.WD_TABLE_ALIGNMENT.CENTER  # располагаем таблицу по центру
+        for row in table.rows:
+            for cell in row.cells:
+                cell.width = docx.shared.Inches(0.8)
+        table.autofit = False
+        for row in table.rows:
+            for cell in row.cells:
+                paragraphs = cell.paragraphs
+                for paragraph in paragraphs:
+                    paragraph.alignment = docx.enum.text.WD_ALIGN_PARAGRAPH.CENTER  # устанавливаем выравнивание ячеек по центру по вертикали
+                    for run in paragraph.runs:
+                        run.font.bold = False  # убираем жирный шрифт
+
         paragraph = document.add_paragraph()
+        print()
+        task2 = tasks[11][1].split('p2')
+        task2[0] = task2[0].replace('4,7', str(task_ans[0][2]))
+        run = paragraph.add_run("\n   " + task2[0])
+        run.style = style_task
+        run = paragraph.add_run("\u0070\u2082")
+        run = paragraph.add_run(task2[1])
+
+        task_ans = task_ans[1:]
+        random.shuffle(task_ans)
+
+        table = document.add_table(rows=1, cols=4)
+        table_style()
+        row_cells = table.rows[0].cells
+        row_cells[0].text = f"а) {task_ans[0]};"
+        row_cells[1].text = f"б) {task_ans[1]};"
+        row_cells[2].text = f"в) {task_ans[2]};"
+        row_cells[3].text = f"г) {task_ans[3]}."
+
+        # задание 12
+        paragraph = document.add_paragraph()
+        task = "Непрерывная случайная величина X задана плотностью распределения вероятностей:\t"
+        run = paragraph.add_run('12. ')
+        run.bold = True
+        run = paragraph.add_run(task)
+        run.bold = False
+        run.style = style_task
+        printTask12(document)
+        # paragraph = document.add_paragraph()
 
         # задание 13
         M = random.randint(1, 31)  # Создаем мат ожидание

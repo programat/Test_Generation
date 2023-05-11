@@ -49,10 +49,10 @@ def printTask10(document):
 	result = transform(tree)
 
 	#Выводим условие
-	p = document.add_paragraph('Непрерывная случайная величина X задана функцией распределения вероятностей:\t',style='List Number')
-	run = p.add_run()
-	run.add_break()
-	run.add_break(WD_BREAK.LINE)
+	p = document.add_paragraph()
+	# run = p.add_run()
+	# run.add_break()
+	# run.add_break(WD_BREAK.LINE)
 	p.alignment = WD_PARAGRAPH_ALIGNMENT.JUSTIFY
 	p.style.font.name = 'Times New Roman'
 	p.style.font.size = Pt(16)
