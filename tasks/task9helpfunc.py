@@ -91,8 +91,7 @@ def printTask9(document):
     func = transform(etree.fromstring(s))
     answers.append(func)
 
-    s = '<math xmlns="http://www.w3.org/1998/Math/MathML" >' + '<mfrac><mi>' + str(
-        random.randint(ansFraction.numerator+1, ansFraction.denominator)) + '</mi><mi>' + str(ansFraction.denominator) + '</mi></mfrac></math>'
+    s = '<math xmlns="http://www.w3.org/1998/Math/MathML" >' + '<mfrac><mi>' + str(1+ansFraction.denominator) + '</mi><mi>' + str(ansFraction.denominator) + '</mi></mfrac></math>'
     transform = etree.XSLT(xslt)
     func = transform(etree.fromstring(s))
     answers.append(func)
