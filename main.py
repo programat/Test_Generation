@@ -19,6 +19,7 @@ from tasks.task9helpfunc import printTask9
 from tasks.task10helpfunc import printTask10
 from tasks.task12helpfunc import printTask12
 from tasks.task13helpfunc import printTask13
+from teor_test_generation import printToMathml
 
 # def style_header():
 #     # изменение свойств шрифта и размера шрифта
@@ -53,9 +54,9 @@ def t1():
     items = range(1, n + 1)
     arrangements = list(product(items, repeat=r))
 
-    numbers = {10: 'десяти', 11: 'одиннадцати', 12: 'двенадцати', 13: 'тринадцати', 14: 'четырнадцати',
-               15: 'пятнадцати', 16: 'шестнадцати'}
-    choose = random.randrange(10, 16)
+    # numbers = {10: 'десяти', 11: 'одиннадцати', 12: 'двенадцати', 13: 'тринадцати', 14: 'четырнадцати', 15: 'пятнадцати', 16: 'шестнадцати'}
+    numbers = {4: 'четырех', 5: 'пяти', 6: 'шести', 7: 'семи'}
+    choose = random.randrange(4, 7)
     task = tasks[1].replace('шестнадцати', numbers[choose], 1)
     # print(task)
 
@@ -98,23 +99,23 @@ def t3():
             numbers[2]), 1)).replace('0.', '0,')
         # print(numbers)
         numbers_q = [1 - i for i in numbers]
-        p = round(1 - numbers_q[0] * numbers_q[1] * numbers_q[2], 7)
-        w1 = round(1 - numbers[0] * numbers[1] * numbers[2], 7)
-        w2 = round(numbers_q[0] * numbers_q[1] * numbers_q[0], 7)
-        w3 = round(numbers[0] * numbers[1] * numbers[2], 7)
+        p = round(1 - numbers_q[0] * numbers_q[1] * numbers_q[2], 3)
+        w1 = round(1 - numbers[0] * numbers[1] * numbers[2], 3)
+        w2 = round(numbers_q[0] * numbers_q[1] * numbers_q[0], 3)
+        w3 = round(numbers[0] * numbers[1] * numbers[2], 3)
 
         ans = [task, p, w1, w2, w3]
-        # print('iteration', ans[1:])
+        print('iteration', ans[1:])
         for i in range(1, len(ans)):
             for j in range(i + 1, len(ans)):
-                if abs(ans[i] - ans[j]) <= 0.01:
-                    # print(ans[i], ans[j])
+                if abs(ans[i] - ans[j]) <= 0.03 or ans[i] > 0.95 or ans[i] < 0.1 or ans[i] == ans[j]:
+                    print(ans[i], ans[j])
                     flag = 0
                     break
             if not flag:
                 break
-    # print('finally')
-    # print(ans)
+    print('finally')
+    print(ans)
     return ans
 
 def t4():
@@ -135,7 +136,7 @@ def t4():
                                                                                                              '$4$', 1)
         task = task.replace('$1$', f'{p_b1} %', 1).replace('$2$', f'{p_b2} %', 1).replace('$3$', f'{p_b1_a}',
                                                                                           1).replace('$4$', f'{p_b2_a}',
-                                                                                                     1)
+                                                                                                     1).replace('0.', '0,')
 
         p_b1 = round(p_b1 / 100, 5)
         p_b2 = round(p_b2 / 100, 5)
@@ -784,6 +785,9 @@ def generate_tests(num_tests):
         row_cells[1].text = f"б) {task_ans[1]};"
         row_cells[2].text = f"в) {task_ans[2]};"
         row_cells[3].text = f"г) {task_ans[3]}."
+
+        # paragraph = document.add_paragraph()
+        # printToMathml(paragraph, "A_i = \lambda")
 
         # задание 12
         paragraph = document.add_paragraph()

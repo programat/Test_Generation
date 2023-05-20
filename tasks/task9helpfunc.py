@@ -116,7 +116,7 @@ def printTask9(document):
     row_cells = table.rows[0].cells
 
     for i in range(0, 4):
-        s = chr(ord('а') + i) + ')'
+        s = chr(ord('а') + i) + ') '
         m = row_cells[i].add_paragraph(s)
         m.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
         m._element.append(answers[i].getroot())

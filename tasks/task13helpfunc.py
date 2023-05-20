@@ -80,7 +80,7 @@ def printTask13(document, M, D):
     for j in range(0,2):
         row_cells = table.rows[j].cells
         for i in range(0, 2):
-            s = chr(ord('а') + ch) + ')'
+            s = chr(ord('а') + ch) + ') '
             m = row_cells[i].add_paragraph(s)
             m.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
             m._element.append(answers[ch].getroot())

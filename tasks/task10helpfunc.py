@@ -189,7 +189,7 @@ def printTask10(document):
 	for j in range(0, 2):
 		row_cells = table.rows[j].cells
 		for i in range(0, 2):
-			s = chr(ord('а') + ch) + ')'
+			s = chr(ord('а') + ch) + ') '
 			m = row_cells[i].add_paragraph(s)
 			m.style.font.name = 'Times New Roman'
 			m.style.font.size = Pt(14)
