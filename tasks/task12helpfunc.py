@@ -26,9 +26,9 @@ def printTask12(document):
 
     #Считаем дисперсию
     dispersion = fractionCoef*endInterval**(power+2)/(power+2)-(fractionCoef*endInterval**(power+1)/(power+1))**2
-    print(dispersion)
-    print(endInterval,power)
-    print(str(fractionCoef)+"x^"+str(power-1))
+    # print(dispersion)
+    # print(endInterval,power)
+    # print(str(fractionCoef)+"x^"+str(power-1))
 
     sfunc = '<mrow><mi>f</mi><mo>&#x2061;</mo><mrow><mo>(</mo><mi>x</mi><mo>)</mo></mrow></mrow><mo>=</mo>'
     s1 = '<mtr><mtd><mrow><mi>0</mi><mo>,</mo><mrow><mi>при x</mi><mo>&#x2264;</mo><mn>0</mn></mrow></mrow></mtd></mtr>'

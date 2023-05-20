@@ -17,15 +17,15 @@ def createInterval():
 def createInnerInterval(a,b):
     begin = random.randint(a, b-1)
     end = random.randint(begin+1, b)
-    print(f"Начало внешнего интервала:{a};Конец внешнего интервала:{b}")
-    print(f"Начало внутреннего интервала:{begin};Конец внутреннего интервала:{end}")
+    # print(f"Начало внешнего интервала:{a};Конец внешнего интервала:{b}")
+    # print(f"Начало внутреннего интервала:{begin};Конец внутреннего интервала:{end}")
     return begin, end
 
 
 def createFractCoef(beginint,endint):
     powerCoef: int = random.randint(2, 5)
     frac = Fraction(powerCoef, endint**powerCoef)
-    print(f"Дробный коэф фукнции {frac};Степень {powerCoef}")
+    # print(f"Дробный коэф фукнции {frac};Степень {powerCoef}")
     return powerCoef-1, frac
 
 
@@ -34,8 +34,8 @@ def printTask9(document):
     beginInner, endInner = createInnerInterval(beginint, endint)
     powerCoef, frec = createFractCoef(beginint, endint)
 
-    taskstr = 'Непрерывная случайная величина X задана плотностью распределения вероятностей:'
-    p = document.add_paragraph(taskstr, style='List Number')
+    # taskstr = 'Непрерывная случайная величина X задана плотностью распределения вероятностей:'
+    p = document.add_paragraph()
     p.alignment = WD_PARAGRAPH_ALIGNMENT.JUSTIFY
 
     s0 = '<mrow><mi>f</mi><mo>&#x2061;</mo><mrow><mo>(</mo><mi>x</mi><mo>)</mo></mrow></mrow><mo>=</mo>'
@@ -83,8 +83,8 @@ def printTask9(document):
     #Формириуем ответы
     answers: list = []
     ansFraction=(frec/(powerCoef+1))*((endInner)**(powerCoef+1)-(beginInner)**(powerCoef+1))
-    print(f'Коэф функции распределения {frec*1/(powerCoef+1)}')
-    print(f'Ответ {ansFraction}')
+    # print(f'Коэф функции распределения {frec*1/(powerCoef+1)}')
+    # print(f'Ответ {ansFraction}')
     s = '<math xmlns="http://www.w3.org/1998/Math/MathML" >' +'<mfrac><mi>'+str(ansFraction.numerator)+'</mi><mi>'+str(ansFraction.denominator) +'</mi></mfrac></math>'
     xslt = etree.parse('MML2OMML.XSL')
     transform = etree.XSLT(xslt)

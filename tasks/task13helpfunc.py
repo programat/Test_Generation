@@ -12,17 +12,7 @@ from lxml import etree
 from sympy import symbols, mathml
 import math
 
-def printTask13(document):
-    # Создаем мат ожидание
-    M = random.randint(1, 31)
-
-    #Создаем дисперсию
-    D = (random.randint(1, 10))**2
-
-    taskstr = 'Случайная величина X распределена нормально с математическим ожиданием M(X) = ' +str(M) +' и дисперсией D(X) = '+str(D)+'. Тогда ее плотность распределения вероятностей имеет вид:'
-    p = document.add_paragraph(taskstr, style='List Number')
-    p.alignment = WD_PARAGRAPH_ALIGNMENT.JUSTIFY
-
+def printTask13(document, M, D):
 
     #Формирируем ответы
     s1 = '<math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mfrac><mi>1</mi><mrow><mi>'
@@ -71,10 +61,10 @@ def printTask13(document):
 
     expr = e ** ((x - D) ** 2 / (2 * M))
     exprxml = mathml(expr, printer='presentation')
-    if D==1:
-        formulastr = s1 + '' + s2 + exprxml + '</math> '
-    else:
+    if D!=1:
         formulastr = s1 + str(D) + s2 + exprxml + '</math> '
+    else:
+        formulastr = s1 + '' + s2 + exprxml + '</math> '
     ans1 = '<math xmlns="http://www.w3.org/1998/Math/MathML">' + formulastr + '</math>'
     tree = etree.fromstring(ans1)
     xslt = etree.parse('MML2OMML.XSL')
