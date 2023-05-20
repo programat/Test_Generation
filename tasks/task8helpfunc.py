@@ -45,11 +45,11 @@ def CalcutionOfCoef():
 
 
     endInterval = Fraction(endInterval.numerator*CosCoef, endInterval.denominator)
-    print(endInterval)
+    # print(endInterval)
     while endInterval > 2:
         endInterval = endInterval-2
 
-    print(endInterval)
+    # print(endInterval)
 
     coef = 1*CosCoef
     if endInterval.numerator > endInterval.denominator:
