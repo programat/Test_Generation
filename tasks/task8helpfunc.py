@@ -45,9 +45,11 @@ def CalcutionOfCoef():
 
 
     endInterval = Fraction(endInterval.numerator*CosCoef, endInterval.denominator)
+    print(endInterval)
     while endInterval > 2:
         endInterval = endInterval-2
 
+    print(endInterval)
 
     coef = 1*CosCoef
     if endInterval.numerator > endInterval.denominator:
@@ -151,10 +153,15 @@ def printTask8(document):
     random.shuffle(answer)
 
     # Вставляем в документ
-    p = document.add_paragraph('')
-    p.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
+    task = "Непрерывная случайная величина X задана плотностью распределения вероятностей:\t"
+    p = document.add_paragraph(task, style='List Number')
+    p.alignment = WD_PARAGRAPH_ALIGNMENT.JUSTIFY
     p.style.font.name = 'Times New Roman'
     p.style.font.size = Pt(16)
+
+    run = p.add_run()
+    run.add_break()
+    run.add_break(WD_BREAK.LINE)
     p._element.append(func.getroot())
 
     p = document.add_paragraph()
@@ -180,5 +187,4 @@ def printTask8(document):
                 p = par._element
                 p.getparent().remove(p)
                 p._p = p._element = None
-
 
