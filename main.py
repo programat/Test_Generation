@@ -379,7 +379,6 @@ def generate_tests(num_tests):
     # num_tests = int(input('Количество тестов для генерации: '))
 
     document = docx.Document()  # документ с практическими тестами
-    doc_ans = docx.Document()  # документ с ответами на практический тест
 
     # задание стиля для header
     style_header = document.styles.add_style('f_header', docx.enum.style.WD_STYLE_TYPE.CHARACTER)
@@ -705,7 +704,7 @@ def generate_tests(num_tests):
         run = paragraph.add_run(task)
         run.bold = False
         run.style = style_task
-        # printTask9(document)
+        printTask9(document)
         # paragraph = document.add_paragraph()
 
         # задание 10
@@ -821,8 +820,58 @@ def generate_tests(num_tests):
             messagebox.showinfo(title="Успешно", message=f"Сгенерировано тестов: {num_tests_entry.get()}")
 
     document.save('text.docx')
+
     print(answers)
+    doc_ans = docx.Document()  # документ с ответами на практический тест
+    table = doc_ans.add_table(rows=1, cols=14)
+
+
+
     # document.save(os.path.join(save_folder, 'text.docx'))
+
+    # Задаем ширину каждого столбца
+    column_widths = [0.6 for i in range(13)]
+    column_widths[0] = 1.5
+
+    # Устанавливаем ширину каждого столбца
+    for i, width in enumerate(column_widths):
+        table.columns[i].width = width
+
+    # Добавляем данные в каждую ячейку таблицы
+    row_cells = table.rows[0].cells
+    row_cells[0].text = 'B \ №'
+    row_cells[1].text = '1'
+    row_cells[2].text = '2'
+    row_cells[3].text = '3'
+    row_cells[4].text = '4'
+    row_cells[5].text = '5'
+    row_cells[6].text = '6'
+    row_cells[7].text = '7'
+    row_cells[8].text = '8'
+    row_cells[9].text = '9'
+    row_cells[10].text = '10'
+    row_cells[11].text = '11'
+    row_cells[12].text = '12'
+    row_cells[13].text = '13'
+
+    # Выравниваем текст в ячейках по центру
+    for row in table.rows:
+        for cell in row.cells:
+            cell.vertical_alignment = docx.enum.text.WD_ALIGN_PARAGRAPH.CENTER
+            paragraphs = cell.paragraphs
+            for paragraph in paragraphs:
+                for run in paragraph.runs:
+                    run.font.size = 10.5
+                    run.font.name = 'Times New Roman'
+                    run.font.bold = True
+                    run.font.color.rgb = (0x00, 0x00, 0x00)
+
+    # Выравниваем таблицу по центру страницы
+    table.alignment = docx.enum.table.WD_TABLE_ALIGNMENT.CENTER
+
+    # Сохраняем документ
+    doc_ans.save('table.docx')
+
 
 
 if __name__ == '__main__':

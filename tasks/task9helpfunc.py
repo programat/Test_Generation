@@ -35,8 +35,8 @@ def printTask9(document):
     powerCoef, frec = createFractCoef(beginint, endint)
 
     # taskstr = 'Непрерывная случайная величина X задана плотностью распределения вероятностей:'
-    # p = document.add_paragraph(taskstr, style='List Number')
-    # p.alignment = WD_PARAGRAPH_ALIGNMENT.JUSTIFY
+    p = document.add_paragraph()
+    p.alignment = WD_PARAGRAPH_ALIGNMENT.JUSTIFY
 
     s0 = '<mrow><mi>f</mi><mo>&#x2061;</mo><mrow><mo>(</mo><mi>x</mi><mo>)</mo></mrow></mrow><mo>=</mo>'
     s1 = '<mfenced open="{" close="" separators=";;,"><mtable frame="solid" rowlines="solid" columnlines="solid" align="center 2">'
