@@ -2,22 +2,21 @@ from fractions import Fraction
 import random
 
 import docx
+from docx import Document
 from docx.enum.style import WD_STYLE_TYPE
 from docx.enum.text import WD_PARAGRAPH_ALIGNMENT, WD_BREAK
 from docx.shared import Pt, Inches
 from lxml import etree
 
+
+
 def CreateCosCoef(a):
     PossibleCoefs: list = []
     for i in range(1, int(a / 2) + 1):
         PossibleCoefs.append(i)
-    # print(f"Возможные коэф косинуса:{PossibleCoefs}")
-
     PossibleCoefsOfPi = list(range(0, 11, 2))
-    # print(f"Возможные коэф у 2pi в косинусе:{PossibleCoefsOfPi}")
     c = random.choice(PossibleCoefs)
     b = random.choice(PossibleCoefsOfPi) * a * 2
-    # print(c, b)
     return c + b
 
 
@@ -29,12 +28,10 @@ def CreateInterval():
     Picoef: list = list(range(0 + CoefSign, 10, 2))
     begincoef = random.choice(Picoef)
     beginInterval = begincoef
-    # print(f"Начало интерва:{beginInterval}*p")
 
     # Формируем конечную точку промежутка
     possibleEnds: list = [Fraction(1, 6), Fraction(1, 4), Fraction(1, 3), Fraction(1, 2)]
     endInterval = random.choice(possibleEnds)
-    # print(f"Конец интерва:{endInterval + begincoef}*p ({endInterval}+{begincoef}*p)")
 
     return beginInterval, endInterval + begincoef
 
@@ -44,19 +41,17 @@ def CalcutionOfCoef():
     CosCoef: int = CreateCosCoef(endInterval.denominator)
 
     # Вычисляем точное значение sin(x)
-    fractionNumenator = (endInterval * CosCoef).numerator
-    fractionDenumenator = (endInterval).denominator
-
-    # print(f"Коэффициент косинуса:{CosCoef}")
-
-    # print(f"Старый конец интервала:{fractionNumenator}/{fractionDenumenator}")
     oldEndOfInterval = endInterval
-    endInterval = Fraction(fractionNumenator % (2 * fractionDenumenator), endInterval.denominator)
-    # print(f"Новый конец интервала:{endInterval}")
 
-    coef = 1
+
+    endInterval = Fraction(endInterval.numerator*CosCoef, endInterval.denominator)
+    while endInterval > 2:
+        endInterval = endInterval-2
+
+
+    coef = 1*CosCoef
     if endInterval.numerator > endInterval.denominator:
-        coef = -1
+        coef = -1*(CosCoef)
 
     a = endInterval.denominator
     match a:
@@ -99,7 +94,7 @@ def printTask8(document):
     # Делаем косинус
     if CosCoef == 1:
         CosCoef = ''
-    cosStr = '<mtr><mtd><mrow><mi>cos</mi><mo>&#x2061;</mo><mrow><mo>(</mo>' + '<mrow><mi>' + str(
+    cosStr = '<mtr><mtd><mrow><mi>Ccos</mi><mo>&#x2061;</mo><mrow><mo>(</mo>' + '<mrow><mi>' + str(
         CosCoef) + '</mi><mo><mchar name="InvisibleTimes"/></mo><mi>x</mi></mrow>' + '<mo>)</mo></mrow></mrow>'
 
     # Делаем конец интервала
@@ -130,11 +125,10 @@ def printTask8(document):
     answer.append(answerroot)
 
     if oldEndOfInterval.numerator == 1:
-        old=''
+        old=random.randint(2,12)
     else:
         old=str(oldEndOfInterval.numerator)
-    ans = '<mfrac><mrow><mi>' + str(
-        oldEndOfInterval.denominator) + '</mi><mo><mchar name="InvisibleTimes"/></mo><mi>&#x03c0;</mi></mrow>' + '<mi>' + old + '</mi></mfrac>'
+    ans = '<mfrac><mrow><mi>' + str(oldEndOfInterval.denominator) + '</mi><mo><mchar name="InvisibleTimes"/></mo><mi>&#x03c0;</mi></mrow>' + '<mi>' + str(old) + '</mi></mfrac>'
     tree = etree.fromstring('<math xmlns="http://www.w3.org/1998/Math/MathML">' + ans + '</math>')
     transform = etree.XSLT(xslt)
     new_dom = transform(tree)
@@ -155,20 +149,20 @@ def printTask8(document):
     answer.append(new_dom)
 
     random.shuffle(answer)
-    # print(answer)
 
     # Вставляем в документ
-    p = document.add_paragraph()
-    p.alignment = WD_PARAGRAPH_ALIGNMENT.JUSTIFY
+    p = document.add_paragraph('')
+    p.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
     p.style.font.name = 'Times New Roman'
     p.style.font.size = Pt(16)
-
     p._element.append(func.getroot())
 
-    p = document.add_paragraph('Тогда параметр C принимает значение:')
+    p = document.add_paragraph()
     p.alignment = WD_PARAGRAPH_ALIGNMENT.JUSTIFY
-    p.style.font.name = 'Times New Roman'
-    p.style.font.size = Pt(16)
+    run = p.add_run('Тогда параметр C принимает значение:\t')
+    font = run.font
+    font.size = Pt(16)
+    run.add_break()
 
     table = document.add_table(rows=1, cols=4)
     table.alignment = docx.enum.table.WD_TABLE_ALIGNMENT.CENTER
@@ -186,4 +180,5 @@ def printTask8(document):
                 p = par._element
                 p.getparent().remove(p)
                 p._p = p._element = None
+
 
