@@ -20,6 +20,8 @@ from tasks.task10helpfunc import printTask10
 from tasks.task12helpfunc import printTask12
 from tasks.task13helpfunc import printTask13
 
+from teor_test_generation import generate_teor_tests
+
 # def style_header():
 #     # изменение свойств шрифта и размера шрифта
 #     font = run.font
