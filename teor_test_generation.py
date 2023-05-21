@@ -156,7 +156,7 @@ def generate_teor_tests(num_tests):
 
             task = tasks[questions[j]][0]
             for item in task:
-                print(item)
+                # print(item)
                 if isinstance(item, tuple):
                     if questions[j]==30 or questions[j]==31:
                         printToMathml(paragraph, item[0], False)
@@ -178,7 +178,7 @@ def generate_teor_tests(num_tests):
 
             counter = 0
             for item in answers:
-                print(item)
+                # print(item)
                 paragraph = document.add_paragraph(f"{chr(ord('А')+counter)}) ")
                 font = paragraph.style.font
                 font.size = Pt(14)
@@ -202,7 +202,7 @@ def generate_teor_tests(num_tests):
 
 
 
-    print(answers_forTable)
+    # print(answers_forTable)
     for row in table.rows:
         for cell in row.cells:
             cell.width = docx.shared.Inches(0.5)
@@ -251,4 +251,5 @@ def generate_teor_tests(num_tests):
     doc_answers.save('answers.docx')
 
 if __name__ == '__main__':
-    generate_teor_tests(100)
+    pass
+    # generate_teor_tests(100)
