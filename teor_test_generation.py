@@ -1,3 +1,5 @@
+import random
+
 import docx
 from docx import Document
 from docx.enum.style import WD_STYLE_TYPE
@@ -7,8 +9,11 @@ from lxml import etree
 import latex2mathml.converter
 
 
-def printToMathml(paragraph, formula):
-    stri = latex2mathml.converter.convert(formula)
+def printToMathml(paragraph, formula, con=True):
+    if con:
+        stri = latex2mathml.converter.convert(formula)
+    else:
+        stri = formula
     tree = etree.fromstring(stri)
     xslt = etree.parse('MML2OMML.XSL')
     transform = etree.XSLT(xslt)
@@ -55,8 +60,8 @@ tasks = {1: (['Элементарное событие – это '], ['Един
          29: (['Зная характеристическую функцию можно определить функцию распределения'],
               ['Произвольной случайной величины', 'Непрерывной случайной величины', 'Простой случайной величины',
                'Невозможно определить функцию распределения']),
-         30: (['Определите закон распределения непрерывной случайной величины, если плотность распределения имеет вид ', (r'p(x) = \left\{ \begin{array}{cl}0, \ x \notin [a,b] \\\frac{1}{b-a}, \ x \in [a,b]\end{array} \right.', 1)], ['Равномерное распределение', 'Экспоненциальное распределение', 'Нормальное распределение', 'Биномиальное распределение']),
-         31: (['Определите закон распределения непрерывной случайной величины, если плотность распределения имеет вид ', (r'p(x) = \left\{ \begin{array}{cl}\lambda e^{-\lambda x}, \ x \geq 0 \\0, \ x < 0\end{array} \right.', 1)], ['Экспоненциальное распределение', 'Нормальное распределение', 'Равномерное распределение','Биномиальное распределение']),
+         30: (['Определите закон распределения непрерывной случайной величины, если плотность распределения имеет вид ', (r'<math xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>p(x)</mi></mrow><mo>=</mo><mrow><mfenced open="{" close="" separators=";;,"><mtable frame="solid" rowlines="solid" columnlines="solid" align="center 2"><mtr><mtd><mi>0,x</mi><mo>&#8950;</mo><mi>[a,b]</mi></mtd></mtr><mtr><mtd><mfrac><mi>1</mi><mrow><mi>a-b</mi></mrow></mfrac><mo><mchar name="InvisibleTimes"/></mo><mrow><mi>x</mi><mo>&#8712;</mo><mi>[a,b]</mi></mrow></mtd></mtr></mtable></mfenced></mrow></math>', 1)], ['Равномерное распределение', 'Экспоненциальное распределение', 'Нормальное распределение', 'Биномиальное распределение']),
+         31: (['Определите закон распределения непрерывной случайной величины, если плотность распределения имеет вид ', (r'<math xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>p(x)</mi></mrow><mo>=</mo><mrow><mfenced open="{" close="" separators=";;,"><mtable frame="solid" rowlines="solid" columnlines="solid" align="center 2"><mtr><mtd><mrow><mi>&#955;</mi><mo><mchar name="InvisibleTimes"/></mo><mrow><msup><mi>e</mi><mrow><mi>-&#955;x</mi></mrow></msup></mrow></mrow><mo><mchar name="InvisibleTimes"/></mo><mi>,x&#8805;0</mi></mtd></mtr><mtr><mtd><mrow><mi>0,x&lt;0</mi></mrow></mtd></mtr></mtable></mfenced></mrow></math>', 1)], ['Экспоненциальное распределение', 'Нормальное распределение', 'Равномерное распределение','Биномиальное распределение']),
          32: (['Определите закон распределения непрерывной случайной величины, если плотность распределения имеет вид  ', (r'p(x) = \frac{1}{\sigma \sqrt{2\pi}} e^{-\frac{1}{2}\frac{(x-a)^2}{\sigma^2}}', 1)], ['Нормальное распределение', 'Биномиальное распределение', 'Распределение Бернулли','Распределение Пуассона']),
          33: (['Выберете неверное утверждение:'], ['Функция распределения F(x, у) есть отрицательная функция, заключенная между нулем и единицей', 'Функция распределения F(x, у) есть неубывающая функция по каждому из аргументов', ['Если хотя бы один из аргументов обращается в ', (r'-\infty', 1), ' функция распределения F(x, у)  равна нулю'], ['Если оба аргумента равны ', (r'+\infty', 1), ' то функция распределения равна единице']]),
          34: (['Двумерная случайная величина называется непрерывной, если ее функция распределения-'], ['непрерывная, дифференцируемая по каждому из аргументов, и существует вторая смешанная производная', 'непрерывная, дифференцируемая по каждому из аргументов, и существует третья смешанная производная', 'непрерывная', 'Ни один вариант не является верным']),
@@ -97,10 +102,32 @@ def generate_teor_tests(num_tests):
     style_task.font.name = 'Times New Roman'
     style_task.font.size = docx.shared.Pt(16)
 
+
+    #Создаем документ для ответов
+    doc_answers= docx.Document()
+    title = doc_answers.add_paragraph(f'Ответы для тестов «Варианты (1-{num_tests})»')
+    title.alignment = docx.enum.text.WD_ALIGN_PARAGRAPH.CENTER
+    font = title.style.font
+    font.name = 'Times New Roman'
+    font.size = docx.shared.Pt(16)
+    font.bold = True
+    run = title.add_run()
+    run.add_break(docx.enum.text.WD_BREAK.LINE)
+
+    table = doc_answers.add_table(rows=1 + num_tests, cols=7, style='Table Grid')
+    table.alignment = docx.enum.table.WD_TABLE_ALIGNMENT.CENTER
+    row_cells = table.rows[0].cells
+    row_cells[0].text = 'B\№'
+    for i in range(1, 7):
+        row_cells[i].text = str(i)
+    answers_forTable = []
+
+
+
     for i in range(1, num_tests + 1):
         # добавление параграфа с вариантом
         paragraph = document.add_paragraph()
-        run = paragraph.add_run(f'Вариант 4 (№{i})')
+        run = paragraph.add_run(f'Вариант (№{i})')
         run.style = style_header
         run.font.bold = True
         paragraph.alignment = docx.enum.text.WD_ALIGN_PARAGRAPH.CENTER
@@ -110,28 +137,118 @@ def generate_teor_tests(num_tests):
         run = paragraph.add_run('Тест по теме «Теория вероятностей и математическая статистика»\n')
         run.style = style_header
         paragraph.alignment = docx.enum.text.WD_ALIGN_PARAGRAPH.CENTER
+        answers_row = []
 
-        for j in range(1, 31+1):
+        # Формируем массив заданий
+        questions = []
+        for j in range(0, 6):
+            if j != 5:
+                number = random.randint(1+j*9, 9+j*9)
+            else:
+                number = random.randint(46,52)
+            questions.append(number)
+
+        for j in range(0, 6):
             paragraph = document.add_paragraph()
-            run = paragraph.add_run(f'{j}. ')
+            run = paragraph.add_run(f'{j+1}. ')
             run.style = style_task
             run.bold = True
 
-            task = tasks[j][0]
+            task = tasks[questions[j]][0]
             for item in task:
                 print(item)
                 if isinstance(item, tuple):
-                    printToMathml(paragraph, item[0])
+                    if questions[j]==30 or questions[j]==31:
+                        printToMathml(paragraph, item[0], False)
+                    else:
+                        printToMathml(paragraph, item[0])
                 else:
                     run = paragraph.add_run(item)
                     run.style = style_task
 
+            #Выводим в документ
+            task = tasks[questions[j]][1]
+            realAnswer = task[0]
+            answers = []
+            for item in task:
+                answers.append(item)
+            random.shuffle(answers)
+            answers_row.append(str(answers.index(realAnswer)))
+
+
+            counter = 0
+            for item in answers:
+                print(item)
+                paragraph = document.add_paragraph(f"{chr(ord('А')+counter)}) ")
+                font = paragraph.style.font
+                font.size = Pt(14)
+                counter = counter+1
+                if isinstance(item, tuple):
+                    printToMathml(paragraph, item[0])
+                elif len(item) == 3:
+                    run=paragraph.add_run(item[0])
+                    run.style = style_task
+                    printToMathml(paragraph,item[1][0])
+                    run=paragraph.add_run(item[2])
+                    run.style = style_task
+                else:
+                    run = paragraph.add_run(item)
+                    run.style = style_task
+
+        p = document.add_paragraph('')
+        run = p.add_run()
+        run.add_break(WD_BREAK.PAGE)
+        answers_forTable.append(answers_row)
 
 
 
+    print(answers_forTable)
+    for row in table.rows:
+        for cell in row.cells:
+            cell.width = docx.shared.Inches(0.5)
+    table.autofit = False
+    for row in table.rows:
+        for cell in row.cells:
+            paragraphs = cell.paragraphs
+            for paragraph in paragraphs:
+                paragraph.alignment = docx.enum.text.WD_ALIGN_PARAGRAPH.CENTER  # устанавливаем выравнивание ячеек по центру по вертикали
+                for run in paragraph.runs:
+                    run.font.bold = True  # убираем жирный шрифт
+
+    for i in range(1, num_tests + 1):
+        row_cells = table.rows[i].cells
+        row_cells[0].text = str(i)
+        for j in range(1, 6 + 1):
+            row_cells[j].text = chr(ord('А')+int(answers_forTable[i-1][j-1]))
+
+# Выравниваем текст в ячейках по центру
+    for row in table.rows:
+        for cell in row.cells:
+            cell.vertical_alignment = docx.enum.text.WD_ALIGN_PARAGRAPH.CENTER
+            paragraphs = cell.paragraphs
+            for paragraph in paragraphs:
+                paragraph.alignment = docx.enum.text.WD_ALIGN_PARAGRAPH.CENTER
+                for run in paragraph.runs:
+                    run.font.size = docx.shared.Pt(14)
+                    run.font.name = 'Times New Roman'
+                    run.font.bold = False
+    cells = table.column_cells(0)
+    for cell in cells:
+        paragraphs = cell.paragraphs
+        for paragraph in paragraphs:
+            paragraph.alignment = docx.enum.text.WD_ALIGN_PARAGRAPH.CENTER
+            for run in paragraph.runs:
+                run.font.bold = True
+    cells = table.row_cells(0)
+    for cell in cells:
+        paragraphs = cell.paragraphs
+        for paragraph in paragraphs:
+            paragraph.alignment = docx.enum.text.WD_ALIGN_PARAGRAPH.CENTER
+            for run in paragraph.runs:
+                run.font.bold = True
 
     document.save('text_teor.docx')
-
+    doc_answers.save('answers.docx')
 
 if __name__ == '__main__':
-    generate_teor_tests(1)
+    generate_teor_tests(100)
