@@ -72,6 +72,7 @@ def printTask13(document, M, D):
     answerroot = transform(tree)
     answers.append(answerroot)
 
+    p_find = answers[0]
     random.shuffle(answers)
 
     table = document.add_table(rows=2, cols=2)
@@ -92,3 +93,5 @@ def printTask13(document, M, D):
                     p = par._element
                     p.getparent().remove(p)
                     p._p = p._element = None
+
+    return chr(answers.index(p_find) + 1072).capitalize()

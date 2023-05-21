@@ -115,6 +115,7 @@ def printTask12(document):
     result = transform(tree)
     answers.append(result)
 
+    p_find = answers[0]
     random.shuffle(answers)
 
 
@@ -141,3 +142,5 @@ def printTask12(document):
                 p = par._element
                 p.getparent().remove(p)
                 p._p = p._element = None
+
+    return chr(answers.index(p_find) + 1072).capitalize()

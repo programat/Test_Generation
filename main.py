@@ -105,17 +105,17 @@ def t3():
         w3 = round(numbers[0] * numbers[1] * numbers[2], 3)
 
         ans = [task, p, w1, w2, w3]
-        print('iteration', ans[1:])
+        # print('iteration', ans[1:])
         for i in range(1, len(ans)):
             for j in range(i + 1, len(ans)):
                 if abs(ans[i] - ans[j]) <= 0.03 or ans[i] > 0.95 or ans[i] < 0.1 or ans[i] == ans[j]:
-                    print(ans[i], ans[j])
+                    # print(ans[i], ans[j])
                     flag = 0
                     break
             if not flag:
                 break
-    print('finally')
-    print(ans)
+    # print('finally')
+    # print(ans)
     return ans
 
 def t4():
@@ -306,7 +306,7 @@ def create_main_window():
                 raise ValueError
         except ValueError:
             num_tests_entry.config(highlightbackground='red', highlightcolor='red')
-            messagebox.showerror(title="Ошибка", message="Недопустимое значение. Введите число от 1 до 100.")
+            messagebox.showerror(title="Ошибка", message="Недопустимое значение. Введите число от 1 до 200.")
             return False
         else:
             num_tests_entry.config(highlightbackground='green', highlightcolor='green')
@@ -675,7 +675,7 @@ def generate_tests(num_tests):
         task_ans = task_ans[1:]
         p_find = task_ans[0]
         random.shuffle(task_ans)
-        answers[i][1] = chr(task_ans.index(p_find) + 1072).capitalize()
+        answers[i][7] = chr(task_ans.index(p_find) + 1072).capitalize()
 
         table = document.add_table(rows=2, cols=2)
         table_style()
@@ -694,7 +694,7 @@ def generate_tests(num_tests):
         run = paragraph.add_run(task)
         run.style = style_task
         run.bold = False
-        printTask8(document)
+        answers[i][8] = printTask8(document)
         # paragraph = document.add_paragraph()
 
         # задание 9
@@ -705,7 +705,7 @@ def generate_tests(num_tests):
         run = paragraph.add_run(task)
         run.bold = False
         run.style = style_task
-        printTask9(document)
+        answers[i][9] = printTask9(document)
         # paragraph = document.add_paragraph()
 
         # задание 10
@@ -716,7 +716,7 @@ def generate_tests(num_tests):
         run = paragraph.add_run(task)
         run.bold = False
         run.style = style_task
-        printTask10(document)
+        answers[i][10] = printTask10(document)
         # paragraph = document.add_paragraph()
 
         # задание 11
@@ -776,7 +776,9 @@ def generate_tests(num_tests):
         run = paragraph.add_run(task2[1])
 
         task_ans = task_ans[1:]
+        p_find = task_ans[0]
         random.shuffle(task_ans)
+        answers[i][11] = chr(task_ans.index(p_find) + 1072).capitalize()
 
         table = document.add_table(rows=1, cols=4)
         table_style()
@@ -797,7 +799,7 @@ def generate_tests(num_tests):
         run = paragraph.add_run(task)
         run.bold = False
         run.style = style_task
-        printTask12(document)
+        answers[i][12] = printTask12(document)
         # paragraph = document.add_paragraph()
 
         # задание 13
@@ -813,7 +815,7 @@ def generate_tests(num_tests):
         ran = paragraph.add_run(task)
         run.style = style_task
         run.bold = True
-        printTask13(document, M, D)
+        answers[i][13] = printTask13(document, M, D)
         paragraph = document.add_paragraph()
 
         # перенос страницы
@@ -824,59 +826,64 @@ def generate_tests(num_tests):
             messagebox.showinfo(title="Успешно", message=f"Сгенерировано тестов: {num_tests_entry.get()}")
 
     document.save('text.docx')
+    # document.save(os.path.join(save_folder, 'text.docx'))generate_answers
 
+    generate_answers(num_tests)
+
+def generate_answers(num_tests):
     # print(answers)
-    # doc_ans = docx.Document()  # документ с ответами на практический тест
-    # table = doc_ans.add_table(rows=1, cols=14)
-    #
-    #
-    #
-    # # document.save(os.path.join(save_folder, 'text.docx'))
-    #
+    doc_ans = docx.Document()  # документ с ответами на практический тест
+    table = doc_ans.add_table(rows=1 + num_tests, cols=14)
+
     # # Задаем ширину каждого столбца
-    # column_widths = [0.6 for i in range(13)]
-    # column_widths[0] = 1.5
+    # column_widths = [docx.shared.Inches(0.6) for i in range(13)]
+    # column_widths[0] = docx.shared.Inches(2)
     #
     # # Устанавливаем ширину каждого столбца
     # for i, width in enumerate(column_widths):
     #     table.columns[i].width = width
-    #
-    # # Добавляем данные в каждую ячейку таблицы
-    # row_cells = table.rows[0].cells
-    # row_cells[0].text = 'B \ №'
-    # row_cells[1].text = '1'
-    # row_cells[2].text = '2'
-    # row_cells[3].text = '3'
-    # row_cells[4].text = '4'
-    # row_cells[5].text = '5'
-    # row_cells[6].text = '6'
-    # row_cells[7].text = '7'
-    # row_cells[8].text = '8'
-    # row_cells[9].text = '9'
-    # row_cells[10].text = '10'
-    # row_cells[11].text = '11'
-    # row_cells[12].text = '12'
-    # row_cells[13].text = '13'
-    #
-    # # Выравниваем текст в ячейках по центру
-    # for row in table.rows:
-    #     for cell in row.cells:
-    #         cell.vertical_alignment = docx.enum.text.WD_ALIGN_PARAGRAPH.CENTER
-    #         paragraphs = cell.paragraphs
-    #         for paragraph in paragraphs:
-    #             for run in paragraph.runs:
-    #                 run.font.size = 10.5
-    #                 run.font.name = 'Times New Roman'
-    #                 run.font.bold = True
-    #                 run.font.color.rgb = (0x00, 0x00, 0x00)
-    #
-    # # Выравниваем таблицу по центру страницы
-    # table.alignment = docx.enum.table.WD_TABLE_ALIGNMENT.CENTER
-    #
-    # # Сохраняем документ
-    # doc_ans.save('table.docx')
 
+    # Добавляем данные в каждую ячейку таблицы
+    row_cells = table.rows[0].cells
+    row_cells[0].text = 'B\№'
+    for i in range(1, 13 + 1):
+        row_cells[i].text = str(i)
 
+    for row in table.rows:
+        for cell in row.cells:
+            cell.width = docx.shared.Inches(0.5)
+    table.autofit = False
+    for row in table.rows:
+        for cell in row.cells:
+            paragraphs = cell.paragraphs
+            for paragraph in paragraphs:
+                paragraph.alignment = docx.enum.text.WD_ALIGN_PARAGRAPH.CENTER  # устанавливаем выравнивание ячеек по центру по вертикали
+                for run in paragraph.runs:
+                    run.font.bold = True  # убираем жирный шрифт
+
+    for i in range(1, num_tests + 1):
+        row_cells = table.rows[i].cells
+        row_cells[0].text = str(i)
+        for j in range(1, 13 + 1):
+            row_cells[j].text = answers[i][j]
+
+    # Выравниваем текст в ячейках по центру
+    for row in table.rows:
+        for cell in row.cells:
+            cell.vertical_alignment = docx.enum.text.WD_ALIGN_PARAGRAPH.CENTER
+            paragraphs = cell.paragraphs
+            for paragraph in paragraphs:
+                for run in paragraph.runs:
+                    run.font.size = docx.shared.Pt(10.5)
+                    run.font.name = 'Times New Roman'
+                    run.font.bold = False
+                    run.font.color.rgb = docx.shared.RGBColor(0x00, 0x00, 0x00)
+
+    # Выравниваем таблицу по центру страницы
+    table.alignment = docx.enum.table.WD_TABLE_ALIGNMENT.CENTER
+
+    # Сохраняем документ
+    doc_ans.save('table.docx')
 
 if __name__ == '__main__':
     # # Путь к папке с проектом
@@ -890,4 +897,3 @@ if __name__ == '__main__':
     #     os.makedirs(save_folder)
 
     create_main_window()
-    # generate_tests(3)

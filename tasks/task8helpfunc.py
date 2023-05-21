@@ -8,8 +8,6 @@ from docx.enum.text import WD_PARAGRAPH_ALIGNMENT, WD_BREAK
 from docx.shared import Pt, Inches
 from lxml import etree
 
-
-
 def CreateCosCoef(a):
     PossibleCoefs: list = []
     for i in range(1, int(a / 2) + 1):
@@ -150,6 +148,7 @@ def printTask8(document):
     new_dom = transform(tree)
     answer.append(new_dom)
 
+    p_find = answer[0]
     random.shuffle(answer)
 
     # Вставляем в документ
@@ -188,3 +187,4 @@ def printTask8(document):
                 p.getparent().remove(p)
                 p._p = p._element = None
 
+    return chr(answer.index(p_find) + 1072).capitalize()
