@@ -197,7 +197,11 @@ def generate_teor_tests(num_tests):
 
         p = document.add_paragraph('')
         run = p.add_run()
-        run.add_break(WD_BREAK.PAGE)
+
+        if i != num_tests:
+            run.add_break(WD_BREAK.PAGE)
+        else:
+            print('Тесты теория сгенерены')
         answers_forTable.append(answers_row)
 
 

@@ -23,21 +23,6 @@ from teor_test_generation import printToMathml
 
 from teor_test_generation import generate_teor_tests
 
-# def style_header():
-#     # изменение свойств шрифта и размера шрифта
-#     font = run.font
-#     font.name = 'Times New Roman'
-#     font.size = docx.shared.Pt(16)
-#     run.italic = True
-#     # изменение выравнивания (по центру)
-#     paragraph.alignment = docx.enum.text.WD_ALIGN_PARAGRAPH.CENTER
-
-# def style_task():
-#     font = run.font
-#     font.name = 'Times New Roman'
-#     font.size = docx.shared.Pt(16)
-#     paragraph.alignment = docx.enum.text.WD_ALIGN_PARAGRAPH.JUSTIFY
-
 tasks = {
     1: 'Игральная кость бросается три раза. Тогда вероятность того, что сумма выпавших очков не меньше шестнадцати, равна: ',
     2: 'Вероятность, что наудачу брошенная в круг точка окажется внутри вписанного в него квадрата равна:',
@@ -338,18 +323,30 @@ def create_main_window():
     button_style.configure("Custom.TButton", background="gray", foreground="white", padding=10, font=("Helvetica", 12), borderwidth=0, focuscolor="none", focusthickness=0)
     button_style.map("Custom.TButton", background=[("active", "darkgray")], foreground=[("active", "white")])
 
-    # Создаем кнопку для генерации тестов
-    generate_tests_button = ttk.Button(root, text="Сгенерировать тесты", style="Custom.TButton", command=lambda: generate_tests(int(num_tests_entry.get())))
+    # Создаем кнопку для генерации всех тестов
+    generate_tests_button = ttk.Button(root, text="Сгенерировать все тесты", style="Custom.TButton", command=lambda: (generate_tests(int(num_tests_entry.get())), generate_teor_tests(int(num_tests_entry.get())), messagebox.showinfo(title="Успешно", message=f"Сгенерировано тестов: {num_tests_entry.get()}")))
     generate_tests_button.bind("<ButtonPress>", lambda event: validate_num_tests())
     generate_tests_button.pack(pady=10)
 
-    # Создаем кнопку для скачивания файла
-    download_file_button = ttk.Button(root, text="Скачать примеры", style="Custom.TButton")
-    download_file_button.pack(pady=10)
+    # Создаем кнопку для генерации практических тестов
+    generate_tests_button = ttk.Button(root, text="Сгенерировать практические тесты", style="Custom.TButton", command=lambda: (generate_tests(int(num_tests_entry.get())), messagebox.showinfo(title="Успешно", message=f"Сгенерировано практических тестов: {num_tests_entry.get()}")))
+    generate_tests_button.bind("<ButtonPress>", lambda event: validate_num_tests())
+    generate_tests_button.pack(pady=10)
+
+    # Создаем кнопку для генерации теоретических тестов
+    generate_tests_button = ttk.Button(root, text="Сгенерировать теоретические тесты", style="Custom.TButton", command=lambda: (generate_teor_tests(int(num_tests_entry.get())), messagebox.showinfo(title="Успешно", message=f"Сгенерировано теоретических тестов: {num_tests_entry.get()}")))
+    generate_tests_button.bind("<ButtonPress>", lambda event: validate_num_tests())
+    generate_tests_button.pack(pady=10)
+
+
+
+    # # НЕ создаем кнопку для скачивания файла
+    # download_file_button = ttk.Button(root, text="Скачать примеры", style="Custom.TButton")
+    # download_file_button.pack(pady=10)
 
     def about():
         messagebox.showinfo(title="О программе",
-                           message="Версия 0.3\n\nАвторы:\nКолычев Егор\nКорнилов Кирилл\nПолевая Полина",
+                           message="Версия 0.8\n\nАвторы:\nКолычев Егор\nКорнилов Кирилл\nПолевая Полина",
                            detail="© MIT License. 2023.")
 
 
@@ -824,8 +821,7 @@ def generate_tests(num_tests):
         if i != num_tests:
             document.add_page_break()
         else:
-            print('Тесты сгенерены')
-            messagebox.showinfo(title="Успешно", message=f"Сгенерировано тестов: {num_tests_entry.get()}")
+            print('Тесты практика сгенерены')
 
     document.save('text.docx')
     # document.save(os.path.join(save_folder, 'text.docx'))generate_answers
