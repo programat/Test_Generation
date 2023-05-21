@@ -833,8 +833,20 @@ def generate_tests(num_tests):
 def generate_answers(num_tests):
     # print(answers)
     doc_ans = docx.Document()  # документ с ответами на практический тест
-    table = doc_ans.add_table(rows=1 + num_tests, cols=14)
 
+
+    #Добавлен заголовок
+    title=doc_ans.add_paragraph(f'Ответы для тестов «Варианты (1-{num_tests})»')
+    title.alignment = docx.enum.text.WD_ALIGN_PARAGRAPH.CENTER
+    font = title.style.font
+    font.name = 'Times New Roman'
+    font.size = docx.shared.Pt(16)
+    font.bold = True
+    run=title.add_run()
+    run.add_break(docx.enum.text.WD_BREAK.LINE)
+
+
+    table = doc_ans.add_table(rows=1 + num_tests, cols=14,style='Table Grid')
     # # Задаем ширину каждого столбца
     # column_widths = [docx.shared.Inches(0.6) for i in range(13)]
     # column_widths[0] = docx.shared.Inches(2)
@@ -873,15 +885,32 @@ def generate_answers(num_tests):
             cell.vertical_alignment = docx.enum.text.WD_ALIGN_PARAGRAPH.CENTER
             paragraphs = cell.paragraphs
             for paragraph in paragraphs:
+                paragraph.alignment = docx.enum.text.WD_ALIGN_PARAGRAPH.CENTER
                 for run in paragraph.runs:
-                    run.font.size = docx.shared.Pt(10.5)
+                    run.font.size = docx.shared.Pt(14)
                     run.font.name = 'Times New Roman'
                     run.font.bold = False
                     run.font.color.rgb = docx.shared.RGBColor(0x00, 0x00, 0x00)
 
+
+    # Делаем жирными заголовки
+    cells = table.column_cells(0)
+    for cell in cells:
+        paragraphs = cell.paragraphs
+        for paragraph in paragraphs:
+            paragraph.alignment =docx.enum.text.WD_ALIGN_PARAGRAPH.CENTER
+            for run in paragraph.runs:
+                run.font.bold = True
+    cells = table.row_cells(0)
+    for cell in cells:
+        paragraphs = cell.paragraphs
+        for paragraph in paragraphs:
+            paragraph.alignment = docx.enum.text.WD_ALIGN_PARAGRAPH.CENTER
+            for run in paragraph.runs:
+                run.font.bold = True
+
     # Выравниваем таблицу по центру страницы
     table.alignment = docx.enum.table.WD_TABLE_ALIGNMENT.CENTER
-
     # Сохраняем документ
     doc_ans.save('table.docx')
 
