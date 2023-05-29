@@ -152,15 +152,10 @@ def printTask8(document):
     random.shuffle(answer)
 
     # Вставляем в документ
-    task = "Непрерывная случайная величина X задана плотностью распределения вероятностей:\t"
-    p = document.add_paragraph(task, style='List Number')
+    p = document.add_paragraph("")
     p.alignment = WD_PARAGRAPH_ALIGNMENT.JUSTIFY
     p.style.font.name = 'Times New Roman'
     p.style.font.size = Pt(16)
-
-    run = p.add_run()
-    run.add_break()
-    run.add_break(WD_BREAK.LINE)
     p._element.append(func.getroot())
 
     p = document.add_paragraph()
@@ -168,7 +163,6 @@ def printTask8(document):
     run = p.add_run('Тогда параметр C принимает значение:\t')
     font = run.font
     font.size = Pt(16)
-    run.add_break()
 
     table = document.add_table(rows=1, cols=4)
     table.alignment = docx.enum.table.WD_TABLE_ALIGNMENT.CENTER
@@ -186,5 +180,5 @@ def printTask8(document):
                 p = par._element
                 p.getparent().remove(p)
                 p._p = p._element = None
-
+    document.add_paragraph('\n')
     return chr(answer.index(p_find) + 1072).capitalize()

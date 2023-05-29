@@ -83,6 +83,8 @@ def printTask13(document, M, D):
         for i in range(0, 2):
             s = chr(ord('а') + ch) + ') '
             m = row_cells[i].add_paragraph(s)
+            font=m.style.font
+            font.size=Pt(16)
             m.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
             m._element.append(answers[ch].getroot())
             ch=ch+1

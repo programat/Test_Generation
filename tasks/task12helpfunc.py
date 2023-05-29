@@ -15,13 +15,13 @@ import math
 
 def createInterval():
     begin = 0
-    end = random.randint(1, 7)
+    end = random.randint(1, 5)
     return begin, end
 
 
 def printTask12(document):
     beginInerval, endInterval = createInterval()
-    power = random.randint(2, 6)
+    power = random.randint(2, 5)
     fractionCoef = Fraction(power, endInterval**power)
 
     #Считаем дисперсию
@@ -43,10 +43,13 @@ def printTask12(document):
     else:
         strFracNum = str(fractionCoef.numerator)
 
-    s2 = '<mtr><mtd><mrow><mfrac><mrow>' + '<mi>' + strFracNum + '</mi>' + '<mo><mchar name="InvisibleTimes"/></mo>' + '<mrow>' + exprxml + '</mrow></mrow>' + '<mi>' + str(
+    if fractionCoef.denominator != 1:
+        s2 = '<mtr><mtd><mrow><mfrac><mrow>' + '<mi>' + strFracNum + '</mi>' + '<mo><mchar name="InvisibleTimes"/></mo>' + '<mrow>' + exprxml + '</mrow></mrow>' + '<mi>' + str(
         fractionCoef.denominator) + '</mi></mfrac></mrow><mo>,</mo><mrow><mi>при 0</mi><mo>&#x003c;</mo><mrow><mi>x</mi><mo>&#x2264;</mo><mi>' + str(
         endInterval) + '</mi></mrow></mrow></mtd></mtr>'
-
+    else:
+        s2 = '<mtr><mtd><mrow><mrow>' + '<mi>' + strFracNum + '</mi>' + '<mo><mchar name="InvisibleTimes"/></mo>' + '<mrow>' + exprxml + '</mrow></mrow>' +'</mrow><mo>,</mo><mrow><mi>при 0</mi><mo>&#x003c;</mo><mrow><mi>x</mi><mo>&#x2264;</mo><mi>' + str(
+            endInterval) + '</mi></mrow></mrow></mtd></mtr>'
     s3 = '<mtr><mtd><mrow><mi>0</mi></mrow><mo>,</mo><mrow><mrow><mi>при x</mi></mrow><mo>&#x003e;</mo><mi>' + str(
         endInterval) + '</mi></mrow></mtd></mtr>'
 
@@ -57,11 +60,8 @@ def printTask12(document):
     result = transform(tree)
 
     # Выводим условие
-    p = document.add_paragraph('Непрерывная случайная величина X задана плотностью распределения вероятностей:\t',
-                               style='List Number')
+    p = document.add_paragraph('')
     run = p.add_run()
-    run.add_break()
-    run.add_break(WD_BREAK.LINE)
     p.alignment = WD_PARAGRAPH_ALIGNMENT.JUSTIFY
     p.style.font.name = 'Times New Roman'
     p.style.font.size = Pt(16)
@@ -123,7 +123,6 @@ def printTask12(document):
     run = p.add_run('Тогда ее дисперсия равна:\t')
     font = run.font
     font.size = Pt(16)
-    run.add_break()
 
     table = document.add_table(rows=1, cols=4)
     table.alignment = docx.enum.table.WD_TABLE_ALIGNMENT.CENTER

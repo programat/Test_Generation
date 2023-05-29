@@ -29,7 +29,7 @@ def createFractCoef(beginint,endint):
     return powerCoef-1, frac
 
 
-def printTask9(document):
+def printTask9(document,par):
     beginint, endint = createInterval()
     beginInner, endInner = createInnerInterval(beginint, endint)
     powerCoef, frec = createFractCoef(beginint, endint)
@@ -62,8 +62,7 @@ def printTask9(document):
     xslt = etree.parse('MML2OMML.XSL')
     transform = etree.XSLT(xslt)
     func = transform(etree.fromstring(s))
-    p = document.add_paragraph()
-    p._element.append(func.getroot())
+    par._element.append(func.getroot())
 
 
     #Формируем ответ
@@ -75,7 +74,7 @@ def printTask9(document):
     transform = etree.XSLT(xslt)
     func = transform(etree.fromstring(s))
     p._element.append(func.getroot())
-    run = p.add_run(' равна:\n')
+    run = p.add_run(' равна:')
 
 
 
@@ -85,25 +84,37 @@ def printTask9(document):
     ansFraction=(frec/(powerCoef+1))*((endInner)**(powerCoef+1)-(beginInner)**(powerCoef+1))
     # print(f'Коэф функции распределения {frec*1/(powerCoef+1)}')
     # print(f'Ответ {ansFraction}')
-    s = '<math xmlns="http://www.w3.org/1998/Math/MathML" >' +'<mfrac><mi>'+str(ansFraction.numerator)+'</mi><mi>'+str(ansFraction.denominator) +'</mi></mfrac></math>'
+    if ansFraction.denominator != 1:
+        s = '<math xmlns="http://www.w3.org/1998/Math/MathML" >' +'<mfrac><mi>'+str(ansFraction.numerator)+'</mi><mi>'+str(ansFraction.denominator) +'</mi></mfrac></math>'
+    else:
+        s = '<math xmlns="http://www.w3.org/1998/Math/MathML" >' + '<mi>' + str(ansFraction.numerator) + '</mi></math>'
+
     xslt = etree.parse('MML2OMML.XSL')
     transform = etree.XSLT(xslt)
     func = transform(etree.fromstring(s))
     answers.append(func)
 
-    s = '<math xmlns="http://www.w3.org/1998/Math/MathML" >' + '<mfrac><mi>' + str(1+ansFraction.denominator) + '</mi><mi>' + str(ansFraction.denominator) + '</mi></mfrac></math>'
+    if ansFraction.denominator != 1:
+        s = '<math xmlns="http://www.w3.org/1998/Math/MathML" >' + '<mfrac><mi>' + str(ansFraction.denominator) + '</mi><mi>' + str(ansFraction.denominator+ansFraction.numerator) + '</mi></mfrac></math>'
+    else:
+        s = '<math xmlns="http://www.w3.org/1998/Math/MathML" >' + '<mfrac><mi>' + str(1) + '</mi><mi>' + str(2) + '</mi></mfrac></math>'
     transform = etree.XSLT(xslt)
     func = transform(etree.fromstring(s))
     answers.append(func)
 
-    s = '<math xmlns="http://www.w3.org/1998/Math/MathML" >' + '<mfrac><mi>' + str(1) + '</mi><mi>' + str(
-        ansFraction.denominator+ansFraction.numerator) + '</mi></mfrac></math>'
+    if ansFraction.denominator != 1:
+        s = '<math xmlns="http://www.w3.org/1998/Math/MathML" >' + '<mfrac><mi>' + str(1) + '</mi><mi>' + str(ansFraction.denominator+ansFraction.numerator) + '</mi></mfrac></math>'
+    else:
+        s = '<math xmlns="http://www.w3.org/1998/Math/MathML" >' + '<mfrac><mi>' + str(-1) + '</mi><mi>' + str(2) + '</mi></mfrac></math>'
     transform = etree.XSLT(xslt)
     func = transform(etree.fromstring(s))
     answers.append(func)
 
-    s = '<math xmlns="http://www.w3.org/1998/Math/MathML" >' + '<mfrac><mi>' + str(ansFraction.numerator + 1) + '</mi><mi>' + str(
-        ansFraction.denominator*2) + '</mi></mfrac></math>'
+    if ansFraction.denominator != 1:
+        s = '<math xmlns="http://www.w3.org/1998/Math/MathML" >' + '<mfrac><mi>' + str(ansFraction.numerator) + '</mi><mi>' + str(ansFraction.denominator*ansFraction.denominator+ansFraction.numerator) + '</mi></mfrac></math>'
+    else:
+        s = '<math xmlns="http://www.w3.org/1998/Math/MathML" >' + '<mfrac><mi>' + str(2) + '</mi><mi>' + str(3) + '</mi></mfrac></math>'
+
     xslt = etree.parse('MML2OMML.XSL')
     transform = etree.XSLT(xslt)
     func = transform(etree.fromstring(s))

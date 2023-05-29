@@ -20,7 +20,6 @@ def printToMathml(paragraph, formula, con=True):
     func = transform(tree)
     paragraph._element.append(func.getroot())
 
-
 # все ответы будут записываться в формате:
 # taskt = {40: [[«Чему равно математическое ожидание при экспоненциальном распределении с «,, «latex», «параметром»], [(«lals», 1)]]}
 
@@ -60,9 +59,9 @@ tasks = {1: (['Элементарное событие – это '], ['Един
          29: (['Зная характеристическую функцию можно определить функцию распределения'],
               ['Произвольной случайной величины', 'Непрерывной случайной величины', 'Простой случайной величины',
                'Невозможно определить функцию распределения']),
-         30: (['Определите закон распределения непрерывной случайной величины, если плотность распределения имеет вид ', (r'<math xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>p(x)</mi></mrow><mo>=</mo><mrow><mfenced open="{" close="" separators=";;,"><mtable frame="solid" rowlines="solid" columnlines="solid" align="center 2"><mtr><mtd><mi>0,x</mi><mo>&#8950;</mo><mi>[a,b]</mi></mtd></mtr><mtr><mtd><mfrac><mi>1</mi><mrow><mi>a-b</mi></mrow></mfrac><mo><mchar name="InvisibleTimes"/></mo><mrow><mi>x</mi><mo>&#8712;</mo><mi>[a,b]</mi></mrow></mtd></mtr></mtable></mfenced></mrow></math>', 1)], ['Равномерное распределение', 'Экспоненциальное распределение', 'Нормальное распределение', 'Биномиальное распределение']),
-         31: (['Определите закон распределения непрерывной случайной величины, если плотность распределения имеет вид ', (r'<math xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>p(x)</mi></mrow><mo>=</mo><mrow><mfenced open="{" close="" separators=";;,"><mtable frame="solid" rowlines="solid" columnlines="solid" align="center 2"><mtr><mtd><mrow><mi>&#955;</mi><mo><mchar name="InvisibleTimes"/></mo><mrow><msup><mi>e</mi><mrow><mi>-&#955;x</mi></mrow></msup></mrow></mrow><mo><mchar name="InvisibleTimes"/></mo><mi>,x&#8805;0</mi></mtd></mtr><mtr><mtd><mrow><mi>0,x&lt;0</mi></mrow></mtd></mtr></mtable></mfenced></mrow></math>', 1)], ['Экспоненциальное распределение', 'Нормальное распределение', 'Равномерное распределение','Биномиальное распределение']),
-         32: (['Определите закон распределения непрерывной случайной величины, если плотность распределения имеет вид  ', (r'p(x) = \frac{1}{\sigma \sqrt{2\pi}} e^{-\frac{1}{2}\frac{(x-a)^2}{\sigma^2}}', 1)], ['Нормальное распределение', 'Биномиальное распределение', 'Распределение Бернулли','Распределение Пуассона']),
+         30: (['Определите закон распределения непрерывной случайной величины, если плотность распределения имеет вид\n ', (r'<math xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>p(x)</mi></mrow><mo>=</mo><mrow><mfenced open="{" close="" separators=";;,"><mtable frame="solid" rowlines="solid" columnlines="solid" align="center 2"><mtr><mtd><mi>0,x</mi><mo>&#8950;</mo><mi>[a,b]</mi></mtd></mtr><mtr><mtd><mfrac><mi>1</mi><mrow><mi>a-b</mi></mrow></mfrac><mo><mchar name="InvisibleTimes"/></mo><mrow><mi>x</mi><mo>&#8712;</mo><mi>[a,b]</mi></mrow></mtd></mtr></mtable></mfenced></mrow></math>', 1)], ['Равномерное распределение', 'Экспоненциальное распределение', 'Нормальное распределение', 'Биномиальное распределение']),
+         31: (['Определите закон распределения непрерывной случайной величины, если плотность распределения имеет вид\n ', (r'<math xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>p(x)</mi></mrow><mo>=</mo><mrow><mfenced open="{" close="" separators=";;,"><mtable frame="solid" rowlines="solid" columnlines="solid" align="center 2"><mtr><mtd><mrow><mi>&#955;</mi><mo><mchar name="InvisibleTimes"/></mo><mrow><msup><mi>e</mi><mrow><mi>-&#955;x</mi></mrow></msup></mrow></mrow><mo><mchar name="InvisibleTimes"/></mo><mi>,x&#8805;0</mi></mtd></mtr><mtr><mtd><mrow><mi>0,x&lt;0</mi></mrow></mtd></mtr></mtable></mfenced></mrow></math>', 1)], ['Экспоненциальное распределение', 'Нормальное распределение', 'Равномерное распределение','Биномиальное распределение']),
+         32: (['Определите закон распределения непрерывной случайной величины, если плотность распределения имеет вид', (r'= \frac{1}{\sigma \sqrt{2\pi}} e^{-\frac{1}{2}\frac{(x-a)^2}{\sigma^2}}', 1)], ['Нормальное распределение', 'Биномиальное распределение', 'Распределение Бернулли','Распределение Пуассона']),
          33: (['Выберете неверное утверждение:'], ['Функция распределения F(x, у) есть отрицательная функция, заключенная между нулем и единицей', 'Функция распределения F(x, у) есть неубывающая функция по каждому из аргументов', ['Если хотя бы один из аргументов обращается в ', (r'-\infty', 1), ' функция распределения F(x, у)  равна нулю'], ['Если оба аргумента равны ', (r'+\infty', 1), ' то функция распределения равна единице']]),
          34: (['Двумерная случайная величина называется непрерывной, если ее функция распределения-'], ['непрерывная, дифференцируемая по каждому из аргументов, и существует вторая смешанная производная', 'непрерывная, дифференцируемая по каждому из аргументов, и существует третья смешанная производная', 'непрерывная', 'Ни один вариант не является верным']),
          35: (['Плотность распределения вероятностей непрерывной двумерной случайной величины –это'], ['Вторая смешанная частная производная ее функции распределения', 'Сумма всех вероятностей', 'Постоянная величина', 'Все варианты верные']),
@@ -150,6 +149,7 @@ def generate_teor_tests(num_tests):
 
         for j in range(0, 6):
             paragraph = document.add_paragraph()
+            paragraph.alignment = docx.enum.text.WD_ALIGN_PARAGRAPH.JUSTIFY
             run = paragraph.add_run(f'{j+1}. ')
             run.style = style_task
             run.bold = True
@@ -158,14 +158,17 @@ def generate_teor_tests(num_tests):
             for item in task:
                 # print(item)
                 if isinstance(item, tuple):
-                    if questions[j]==30 or questions[j]==31:
+                    if questions[j]==30 or questions[j] == 31:
                         printToMathml(paragraph, item[0], False)
+                    elif questions[j] == 32:
+                        par=document.add_paragraph('p(x)')
+                        printToMathml(par, item[0])
+                        par.alignment = docx.enum.text.WD_ALIGN_PARAGRAPH.LEFT
                     else:
                         printToMathml(paragraph, item[0])
                 else:
                     run = paragraph.add_run(item)
                     run.style = style_task
-
             #Выводим в документ
             task = tasks[questions[j]][1]
             realAnswer = task[0]

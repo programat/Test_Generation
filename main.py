@@ -380,7 +380,14 @@ def generate_tests(num_tests):
 
     document = docx.Document()  # документ с практическими тестами
 
-    # задание стиля для header
+    #Задаем поля документа
+    section = document.sections[0]
+    section.left_margin = docx.shared.Mm(20)
+    section.right_margin = docx.shared.Mm(20)
+    section.top_margin = docx.shared.Mm(20)
+    section.bottom_margin = docx.shared.Mm(20)
+
+
     style_header = document.styles.add_style('f_header', docx.enum.style.WD_STYLE_TYPE.CHARACTER)
     style_header.font.name = 'Times New Roman'
     style_header.font.size = docx.shared.Pt(16)
@@ -395,7 +402,7 @@ def generate_tests(num_tests):
         answers[i] = dict()
         # добавление параграфа с вариантом
         paragraph = document.add_paragraph()
-        run = paragraph.add_run(f'Вариант 4 (№{i})')
+        run = paragraph.add_run(f'Вариант №{i}')
         run.style = style_header
         run.font.bold = True
         paragraph.alignment = docx.enum.text.WD_ALIGN_PARAGRAPH.CENTER
@@ -416,6 +423,7 @@ def generate_tests(num_tests):
 
         task = t1()
         run = paragraph.add_run(task[0])
+        paragraph.alignment = docx.enum.text.WD_ALIGN_PARAGRAPH.JUSTIFY
         run.style = style_task
 
         task_ans = task[1:]
@@ -444,6 +452,7 @@ def generate_tests(num_tests):
         run.bold = True
 
         run = paragraph.add_run(tasks[2])
+        paragraph.alignment = docx.enum.text.WD_ALIGN_PARAGRAPH.JUSTIFY
         run.style = style_task
 
         task_ans = [f'1/2\u03C0', f'2/\u03C0', f'\u03C0/36', f'\u221A3/4']
@@ -467,6 +476,7 @@ def generate_tests(num_tests):
 
         task = t3()
         run = paragraph.add_run(task[0])
+        paragraph.alignment = docx.enum.text.WD_ALIGN_PARAGRAPH.JUSTIFY
         run.style = style_task
 
         task_ans = task[1:]
@@ -490,6 +500,7 @@ def generate_tests(num_tests):
 
         task = t4()
         run = paragraph.add_run(task[0])
+        paragraph.alignment = docx.enum.text.WD_ALIGN_PARAGRAPH.JUSTIFY
         run.style = style_task
         task_ans = task[1:]
         p_find = task_ans[0]
@@ -512,6 +523,7 @@ def generate_tests(num_tests):
 
         task = t5()
         run = paragraph.add_run(task[0])
+        paragraph.alignment = docx.enum.text.WD_ALIGN_PARAGRAPH.JUSTIFY
         run.style = style_task
         task_ans = task[1:]
         p_find = task_ans[0]
@@ -533,6 +545,7 @@ def generate_tests(num_tests):
         run.bold = True
 
         run = paragraph.add_run(tasks[6][0])
+        paragraph.alignment = docx.enum.text.WD_ALIGN_PARAGRAPH.JUSTIFY
         run.style = style_task
 
         task_ans = t6()
@@ -611,6 +624,7 @@ def generate_tests(num_tests):
         run.bold = True
 
         run = paragraph.add_run(tasks[7][0])
+        paragraph.alignment = docx.enum.text.WD_ALIGN_PARAGRAPH.JUSTIFY
         run.style = style_task
 
         task_ans = t7()
@@ -691,6 +705,7 @@ def generate_tests(num_tests):
         run = paragraph.add_run('8. ')
         run.bold = True
         run = paragraph.add_run(task)
+        paragraph.alignment = docx.enum.text.WD_ALIGN_PARAGRAPH.JUSTIFY
         run.style = style_task
         run.bold = False
         answers[i][8] = printTask8(document)
@@ -702,9 +717,11 @@ def generate_tests(num_tests):
         run = paragraph.add_run('9. ')
         run.bold = True
         run = paragraph.add_run(task)
+        paragraph.alignment = docx.enum.text.WD_ALIGN_PARAGRAPH.JUSTIFY
         run.bold = False
         run.style = style_task
-        answers[i][9] = printTask9(document)
+        run.add_break()
+        answers[i][9] = printTask9(document,paragraph)
         # paragraph = document.add_paragraph()
 
         # задание 10
@@ -713,6 +730,7 @@ def generate_tests(num_tests):
         run = paragraph.add_run('10. ')
         run.bold = True
         run = paragraph.add_run(task)
+        paragraph.alignment = docx.enum.text.WD_ALIGN_PARAGRAPH.JUSTIFY
         run.bold = False
         run.style = style_task
         answers[i][10] = printTask10(document)
@@ -728,6 +746,7 @@ def generate_tests(num_tests):
         run.style = style_task
 
         task_ans = t11()
+        paragraph.alignment = docx.enum.text.WD_ALIGN_PARAGRAPH.JUSTIFY
 
         table = document.add_table(rows=2, cols=3)
         table.style = 'Table Grid'
@@ -773,6 +792,7 @@ def generate_tests(num_tests):
         run.style = style_task
         run = paragraph.add_run("\u0070\u2082")
         run = paragraph.add_run(task2[1])
+        paragraph.alignment = docx.enum.text.WD_ALIGN_PARAGRAPH.JUSTIFY
 
         task_ans = task_ans[1:]
         p_find = task_ans[0]
@@ -796,6 +816,7 @@ def generate_tests(num_tests):
         run = paragraph.add_run('12. ')
         run.bold = True
         run = paragraph.add_run(task)
+        paragraph.alignment = docx.enum.text.WD_ALIGN_PARAGRAPH.JUSTIFY
         run.bold = False
         run.style = style_task
         answers[i][12] = printTask12(document)
@@ -812,6 +833,7 @@ def generate_tests(num_tests):
 
         run = paragraph.add_run('13. ')
         ran = paragraph.add_run(task)
+        paragraph.alignment = docx.enum.text.WD_ALIGN_PARAGRAPH.JUSTIFY
         run.style = style_task
         run.bold = True
         answers[i][13] = printTask13(document, M, D)

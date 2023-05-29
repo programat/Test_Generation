@@ -62,7 +62,6 @@ def printTask10(document):
 	run = p.add_run('Тогда ее плотность распределения вероятностей имеет вид:\t')
 	font=run.font
 	font.size=Pt(16)
-	run.add_break()
 	p.alignment = WD_PARAGRAPH_ALIGNMENT.JUSTIFY
 
 	# Начинаем делать ответы
@@ -186,15 +185,17 @@ def printTask10(document):
 	random.shuffle(answers)
 
 	table = document.add_table(rows=2, cols=2)
+	table.alignment = docx.enum.table.WD_TABLE_ALIGNMENT.CENTER
 	ch = 0
 	for j in range(0, 2):
 		row_cells = table.rows[j].cells
 		for i in range(0, 2):
 			s = chr(ord('а') + ch) + ') '
 			m = row_cells[i].add_paragraph(s)
+			m.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
 			m.style.font.name = 'Times New Roman'
-			m.style.font.size = Pt(14)
 			m._element.append(answers[ch].getroot())
+			m.style.font.size = Pt(14)
 			ch = ch + 1
 	for strings in table.rows:
 		for cells in strings.cells:
