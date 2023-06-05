@@ -20,7 +20,7 @@ def printTask13(document, M, D):
     answers = []
     x, e = symbols('x e')
 
-    expr = e**((x-M)**2/(2*D))
+    expr = (1/e)**((x-M)**2/(2*D))
     exprxml = mathml(expr, printer='presentation')
     dstr = str(int(math.sqrt(D)))
     if D == 1:
@@ -33,7 +33,7 @@ def printTask13(document, M, D):
     answerroot = transform(tree)
     answers.append(answerroot)
 
-    expr = e ** ((x - D) ** 2 / (2 * D))
+    expr = (1/e) ** ((x - D) ** 2 / (2 * D))
     exprxml = mathml(expr, printer='presentation')
     mstr = str(M)
     if M == 1:
@@ -46,11 +46,13 @@ def printTask13(document, M, D):
     answerroot = transform(tree)
     answers.append(answerroot)
 
-    if D == 1:
-        dstr = ''
-    expr = e ** ((x - M) ** 2 / (2 * M))
+
+    expr = (1/e) ** ((x - M) ** 2 / (2 * M))
     exprxml = mathml(expr, printer='presentation')
-    formulastr = s1 + str(int(math.sqrt(D))) + s2 + exprxml + '</math> '
+    if D!=1:
+        formulastr = s1 + str(int(math.sqrt(D))) + s2 + exprxml + '</math> '
+    else:
+        formulastr = s1 + '' + s2 + exprxml + '</math> '
     ans1 = '<math xmlns="http://www.w3.org/1998/Math/MathML">' + formulastr + '</math>'
     tree = etree.fromstring(ans1)
     xslt = etree.parse('MML2OMML.XSL')
@@ -59,7 +61,7 @@ def printTask13(document, M, D):
     answers.append(answerroot)
 
 
-    expr = e ** ((x - D) ** 2 / (2 * M))
+    expr = (1/e) ** ((x - D) ** 2 / (2 * M))
     exprxml = mathml(expr, printer='presentation')
     if D!=1:
         formulastr = s1 + str(D) + s2 + exprxml + '</math> '
