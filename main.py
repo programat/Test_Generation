@@ -1,6 +1,7 @@
 # библиотеки для интерфейса
 import tkinter as tk
 from tkinter import ttk, messagebox
+from PIL import Image, ImageTk
 import os
 
 # библиотеки для работы с word
@@ -284,6 +285,18 @@ def t11():
     # print(ans)
     return ans
 
+def play_gif(label, image_list, index):
+    # Отображение текущего кадра
+    image = image_list[index]
+    label.configure(image=image)
+
+    # Увеличение индекса для следующего кадра
+    index = (index + 1) % len(image_list)
+
+    # Рекурсивный вызов функции через заданный интервал времени
+    label.after(52, play_gif, label, image_list, index)
+
+
 def create_main_window():
 
     def validate_num_tests():
@@ -299,29 +312,34 @@ def create_main_window():
             num_tests_entry.config(highlightbackground='green', highlightcolor='green')
             return True
 
-
     root = tk.Tk()
-    root.geometry("400x400")
+    root.minsize(400, 430)
     root.title("Генерация тестов")
+    root.configure(bg="black")
+    root.iconphoto(False, tk.PhotoImage(file="data/PFP-Icon.png"))
 
     # Создаем заголовок
-    title_label = tk.Label(root, text="Генерация тестов", font=("Helvetica", 20))
+    title_label = tk.Label(root, text="Генерация тестов", font=("Helvetica", 20), bg="black", fg="white")
     title_label.pack(pady=10)
 
+    # Создаем GIF-метку
+    gif_label = tk.Label(root)
+    gif_label.configure(border=0)
+    gif_label.pack()
+
     # Создаем текстовое поле для ввода количества тестов
-    num_tests_label = tk.Label(root, text="Количество тестов:")
+    num_tests_label = tk.Label(root, text="Количество тестов:", bg="black", fg="white")
     num_tests_label.pack(pady=10)
 
-    # validate_cmd = (root.register(validate_num_tests), '%P')
-    # num_tests_entry = tk.Entry(root, validate="key", validatecommand=validate_cmd)
     global num_tests_entry
-    num_tests_entry = tk.Entry(root)
+    num_tests_entry = tk.Entry(root, bg="white", fg="black", highlightbackground='#8A8A8A', highlightcolor='#8A8A8A')
     num_tests_entry.pack()
 
     # Создаем стиль для кнопок
     button_style = ttk.Style()
-    button_style.configure("Custom.TButton", background="gray", foreground="white", padding=10, font=("Helvetica", 12), borderwidth=0, focuscolor="none", focusthickness=0)
-    button_style.map("Custom.TButton", background=[("active", "darkgray")], foreground=[("active", "white")])
+    button_style.theme_use('clam')  # Выбираем тему "clam" (темная тема)
+    button_style.configure("Custom.TButton", background="#272727", foreground="white", padding=7, font=("Helvetica", 12), borderwidth=0, focuscolor="none", focusthickness=0, relief="flat", bordercolor="white", borderradius=5)
+    button_style.map("Custom.TButton", background=[("active", "#8A8A8A")], foreground=[("active", "white")])
 
     # Создаем кнопку для генерации всех тестов
     generate_tests_button = ttk.Button(root, text="Сгенерировать все тесты", style="Custom.TButton", command=lambda: (generate_tests(int(num_tests_entry.get())), generate_teor_tests(int(num_tests_entry.get())), messagebox.showinfo(title="Успешно", message=f"Сгенерировано тестов: {num_tests_entry.get()}")))
@@ -329,26 +347,19 @@ def create_main_window():
     generate_tests_button.pack(pady=10)
 
     # Создаем кнопку для генерации практических тестов
-    generate_tests_button = ttk.Button(root, text="Сгенерировать практические тесты", style="Custom.TButton", command=lambda: (generate_tests(int(num_tests_entry.get())), messagebox.showinfo(title="Успешно", message=f"Сгенерировано практических тестов: {num_tests_entry.get()}")))
-    generate_tests_button.bind("<ButtonPress>", lambda event: validate_num_tests())
-    generate_tests_button.pack(pady=10)
+    generate_practical_button = ttk.Button(root, text="Сгенерировать практические тесты", style="Custom.TButton", command=lambda: (generate_tests(int(num_tests_entry.get())), messagebox.showinfo(title="Успешно", message=f"Сгенерировано практических тестов: {num_tests_entry.get()}")))
+    generate_practical_button.bind("<ButtonPress>", lambda event: validate_num_tests())
+    generate_practical_button.pack(pady=10)
 
     # Создаем кнопку для генерации теоретических тестов
-    generate_tests_button = ttk.Button(root, text="Сгенерировать теоретические тесты", style="Custom.TButton", command=lambda: (generate_teor_tests(int(num_tests_entry.get())), messagebox.showinfo(title="Успешно", message=f"Сгенерировано теоретических тестов: {num_tests_entry.get()}")))
-    generate_tests_button.bind("<ButtonPress>", lambda event: validate_num_tests())
-    generate_tests_button.pack(pady=10)
-
-
-
-    # # НЕ создаем кнопку для скачивания файла
-    # download_file_button = ttk.Button(root, text="Скачать примеры", style="Custom.TButton")
-    # download_file_button.pack(pady=10)
+    generate_theoretical_button = ttk.Button(root, text="Сгенерировать теоретические тесты", style="Custom.TButton", command=lambda: (generate_teor_tests(int(num_tests_entry.get())), messagebox.showinfo(title="Успешно", message=f"Сгенерировано теоретических тестов: {num_tests_entry.get()}")))
+    generate_theoretical_button.bind("<ButtonPress>", lambda event: validate_num_tests())
+    generate_theoretical_button.pack()
 
     def about():
         messagebox.showinfo(title="О программе",
-                           message="Версия 0.84\n\nАвторы:\nКолычев Егор\nКорнилов Кирилл\nПолевая Полина",
-                           detail="© MIT License. 2023.")
-
+                            message="Версия 1.0\n\nАвторы:\nКолычев Егор\nКорнилов Кирилл\nПолевая Полина",
+                            detail="© MIT License. 2023.")
 
     menu = tk.Menu(root)
     root.config(menu=menu)
@@ -357,7 +368,16 @@ def create_main_window():
     menu.add_cascade(label="Помощь", menu=help_menu)
     help_menu.add_command(label="О программе", command=about)
 
-    # Показываем главное окно
+    # Загрузка и проигрывание GIF-изображения
+    gif = Image.open("data/background.gif")
+
+    frames = []
+    for frame in range(0, gif.n_frames):
+        gif.seek(frame)
+        frames.append(ImageTk.PhotoImage(gif))
+
+    play_gif(gif_label, frames, 0)
+
     root.mainloop()
 
 def generate_tests(num_tests):
