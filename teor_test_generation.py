@@ -254,8 +254,8 @@ def generate_teor_tests(num_tests):
             for run in paragraph.runs:
                 run.font.bold = True
 
-    document.save('text_teor.docx')
-    doc_answers.save('answers.docx')
+    document.save('сформированные файлы/Тесты теория.docx')
+    doc_answers.save('сформированные файлы/Тесты теория - ответы.docx')
 
 if __name__ == '__main__':
     pass

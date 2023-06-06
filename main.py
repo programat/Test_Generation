@@ -868,7 +868,7 @@ def generate_tests(num_tests):
         else:
             print('Тесты практика сгенерены')
 
-    document.save('text.docx')
+    document.save('сформированные файлы/Тесты практика.docx')
     # document.save(os.path.join(save_folder, 'text.docx'))generate_answers
 
     generate_answers(num_tests)
@@ -955,17 +955,17 @@ def generate_answers(num_tests):
     # Выравниваем таблицу по центру страницы
     table.alignment = docx.enum.table.WD_TABLE_ALIGNMENT.CENTER
     # Сохраняем документ
-    doc_ans.save('table.docx')
+    doc_ans.save('сформированные файлы/Тесты практика - ответы.docx')
 
 if __name__ == '__main__':
-    # # Путь к папке с проектом
-    # project_folder = os.path.dirname(os.path.abspath(__file__))
-    #
-    # # Путь к папке для сохранения файлов
-    # save_folder = os.path.join(project_folder, "сформированные файлы")
-    #
-    # # Создаем папку, если она еще не существует
-    # if not os.path.exists(save_folder):
-    #     os.makedirs(save_folder)
+    # Путь к папке с проектом
+    project_folder = os.path.dirname(os.path.abspath(__file__))
+
+    # Путь к папке для сохранения файлов
+    save_folder = os.path.join(project_folder, "сформированные файлы")
+
+    # Создаем папку, если она еще не существует
+    if not os.path.exists(save_folder):
+        os.makedirs(save_folder)
 
     create_main_window()
