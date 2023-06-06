@@ -361,7 +361,7 @@ def create_main_window():
 
     def about():
         messagebox.showinfo(title="О программе",
-                            message="Версия 1.03\n\nАвторы:\nКолычев Егор\nКорнилов Кирилл\nПолевая Полина",
+                            message="Версия 1.1\n\nАвторы:\nКолычев Егор\nКорнилов Кирилл\nПолевая Полина",
                             detail="© MIT License. 2023.")
 
     menu = tk.Menu(root)
