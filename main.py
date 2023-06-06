@@ -346,7 +346,7 @@ def create_main_window():
 
     def about():
         messagebox.showinfo(title="О программе",
-                           message="Версия 0.8\n\nАвторы:\nКолычев Егор\nКорнилов Кирилл\nПолевая Полина",
+                           message="Версия 0.84\n\nАвторы:\nКолычев Егор\nКорнилов Кирилл\nПолевая Полина",
                            detail="© MIT License. 2023.")
 
 
@@ -653,9 +653,9 @@ def generate_tests(num_tests):
         t.text = 'p\u1D62'
         run._r.append(t)
         row_cells[1].text = f"{task_ans[0][0]}"
-        row_cells[2].text = f"{task_ans[0][1]}"
-        row_cells[3].text = f"{task_ans[0][2]}"
-        row_cells[4].text = f"{task_ans[0][3]}"
+        row_cells[2].text = f"a"
+        row_cells[3].text = f"b"
+        row_cells[4].text = f"c"
         row_cells[5].text = f"{task_ans[0][4]}"
 
         table.alignment = docx.enum.table.WD_TABLE_ALIGNMENT.CENTER  # располагаем таблицу по центру
