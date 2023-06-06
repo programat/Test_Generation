@@ -316,6 +316,7 @@ def create_main_window():
     root.minsize(400, 430)
     root.title("Генерация тестов")
     root.configure(bg="black")
+    root.iconbitmap("data/DiceIcon.ico")
     root.iconphoto(False, tk.PhotoImage(file="data/DiceIcon.png"))
 
     # Создаем заголовок
