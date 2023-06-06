@@ -316,7 +316,7 @@ def create_main_window():
     root.minsize(400, 430)
     root.title("Генерация тестов")
     root.configure(bg="black")
-    root.iconphoto(False, tk.PhotoImage(file="data/PFP-Icon.png"))
+    root.iconphoto(False, tk.PhotoImage(file="data/DiceIcon.png"))
 
     # Создаем заголовок
     title_label = tk.Label(root, text="Генерация тестов", font=("Helvetica", 20), bg="black", fg="white")
@@ -358,7 +358,7 @@ def create_main_window():
 
     def about():
         messagebox.showinfo(title="О программе",
-                            message="Версия 1.0\n\nАвторы:\nКолычев Егор\nКорнилов Кирилл\nПолевая Полина",
+                            message="Версия 1.03\n\nАвторы:\nКолычев Егор\nКорнилов Кирилл\nПолевая Полина",
                             detail="© MIT License. 2023.")
 
     menu = tk.Menu(root)
