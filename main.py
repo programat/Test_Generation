@@ -406,6 +406,7 @@ def create_main_window():
     generate_theoretical_button.bind("<Leave>", lambda event: change_image_btn_3(unpressed_btn_3))
     generate_theoretical_button.pack()
 
+
     def about():
         messagebox.showinfo(title="О программе",
                             message="Версия 1.3\n\nАвторы:\nКолычев Егор\nКорнилов Кирилл\nПолевая Полина",
