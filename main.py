@@ -358,7 +358,7 @@ def create_main_window():
         messagebox.showinfo(title="Успешно", message=f"Сгенерировано тестов: {num_tests_entry.get()}")))
     generate_tests_button.bind("<ButtonPress>", lambda event: (validate_num_tests(), change_image_btn_1(pressed_btn_1)))
     generate_tests_button.bind("<ButtonRelease>",
-                               lambda event: (validate_num_tests(), change_image_btn_1(unpressed_btn_1)))
+                               lambda event: change_image_btn_1(unpressed_btn_1))
     generate_tests_button.bind("<Enter>", lambda event: change_image_btn_1(on_enter_btn_1))
     generate_tests_button.bind("<Leave>", lambda event: change_image_btn_1(unpressed_btn_1))
     generate_tests_button.pack(pady=10)
@@ -375,11 +375,10 @@ def create_main_window():
                                            style="Custom.TButton", command=lambda: (
         generate_tests(int(num_tests_entry.get())),
         messagebox.showinfo(title="Успешно", message=f"Сгенерировано практических тестов: {num_tests_entry.get()}")))
-    generate_practical_button.bind("<ButtonPress>", lambda event: (validate_num_tests()))
     generate_practical_button.bind("<ButtonPress>",
                                    lambda event: (validate_num_tests(), change_image_btn_2(pressed_btn_2)))
     generate_practical_button.bind("<ButtonRelease>",
-                                   lambda event: (validate_num_tests(), change_image_btn_2(unpressed_btn_2)))
+                                   lambda event: change_image_btn_2(unpressed_btn_2))
     generate_practical_button.bind("<Enter>", lambda event: change_image_btn_2(on_enter_btn_2))
     generate_practical_button.bind("<Leave>", lambda event: change_image_btn_2(unpressed_btn_2))
     generate_practical_button.pack(pady=10)
@@ -396,12 +395,11 @@ def create_main_window():
                                              style="Custom.TButton", command=lambda: (
         generate_teor_tests(int(num_tests_entry.get())),
         messagebox.showinfo(title="Успешно", message=f"Сгенерировано теоретических тестов: {num_tests_entry.get()}")))
-    generate_theoretical_button.bind("<ButtonPress>", lambda event: validate_num_tests())
     generate_theoretical_button.bind("<ButtonPress>", lambda event: (validate_num_tests()))
     generate_theoretical_button.bind("<ButtonPress>",
                                      lambda event: (validate_num_tests(), change_image_btn_3(pressed_btn_3)))
     generate_theoretical_button.bind("<ButtonRelease>",
-                                     lambda event: (validate_num_tests(), change_image_btn_3(unpressed_btn_3)))
+                                     lambda event: change_image_btn_3(unpressed_btn_3))
     generate_theoretical_button.bind("<Enter>", lambda event: change_image_btn_3(on_enter_btn_3))
     generate_theoretical_button.bind("<Leave>", lambda event: change_image_btn_3(unpressed_btn_3))
     generate_theoretical_button.pack()
