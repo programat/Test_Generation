@@ -315,7 +315,7 @@ def create_main_window():
             return True
 
     root = tk.Tk()
-    root.minsize(400, 430)
+    root.minsize(400, 470)
     root.title("Генерация тестов")
     root.configure(bg="black")
     root.iconbitmap("data/DiceIcon.ico")
@@ -341,27 +341,74 @@ def create_main_window():
     # Создаем стиль для кнопок
     button_style = ttk.Style()
     button_style.theme_use('clam')  # Выбираем тему "clam" (темная тема)
-    button_style.configure("Custom.TButton", background="#272727", foreground="white", padding=7, font=("Helvetica", 12), borderwidth=0, focuscolor="none", focusthickness=0, relief="flat", bordercolor="white", borderradius=5)
-    button_style.map("Custom.TButton", background=[("active", "#8A8A8A")], foreground=[("active", "white")])
+    button_style.configure("Custom.TButton", border=0, borderwidth=0, background="black")
+    button_style.map("Custom.TButton", background=[("active", "black")], foreground=[("active", "black")])
+
+    def change_image_btn_1(image):
+        generate_tests_button.config(image=image)
+
+    unpressed_btn_1 = tk.PhotoImage(file="data/Button1.1.2.png")
+    pressed_btn_1 = tk.PhotoImage(file="data/Button1.2.3.png")
+    on_enter_btn_1 = tk.PhotoImage(file="data/Button1.2.2.png")
 
     # Создаем кнопку для генерации всех тестов
-    generate_tests_button = ttk.Button(root, text="Сгенерировать все тесты", style="Custom.TButton", command=lambda: (generate_tests(int(num_tests_entry.get())), generate_teor_tests(int(num_tests_entry.get())), messagebox.showinfo(title="Успешно", message=f"Сгенерировано тестов: {num_tests_entry.get()}")))
-    generate_tests_button.bind("<ButtonPress>", lambda event: validate_num_tests())
+    generate_tests_button = ttk.Button(root, image=unpressed_btn_1, text="Сгенерировать все тесты",
+                                       style="Custom.TButton", command=lambda: (
+        generate_tests(int(num_tests_entry.get())), generate_teor_tests(int(num_tests_entry.get())),
+        messagebox.showinfo(title="Успешно", message=f"Сгенерировано тестов: {num_tests_entry.get()}")))
+    generate_tests_button.bind("<ButtonPress>", lambda event: (validate_num_tests(), change_image_btn_1(pressed_btn_1)))
+    generate_tests_button.bind("<ButtonRelease>",
+                               lambda event: (validate_num_tests(), change_image_btn_1(unpressed_btn_1)))
+    generate_tests_button.bind("<Enter>", lambda event: change_image_btn_1(on_enter_btn_1))
+    generate_tests_button.bind("<Leave>", lambda event: change_image_btn_1(unpressed_btn_1))
     generate_tests_button.pack(pady=10)
 
+    def change_image_btn_2(image):
+        generate_practical_button.config(image=image)
+
+    unpressed_btn_2 = tk.PhotoImage(file="data/Button2.1.2.png")
+    pressed_btn_2 = tk.PhotoImage(file="data/Button2.2.3.png")
+    on_enter_btn_2 = tk.PhotoImage(file="data/Button2.2.2.png")
+
     # Создаем кнопку для генерации практических тестов
-    generate_practical_button = ttk.Button(root, text="Сгенерировать практические тесты", style="Custom.TButton", command=lambda: (generate_tests(int(num_tests_entry.get())), messagebox.showinfo(title="Успешно", message=f"Сгенерировано практических тестов: {num_tests_entry.get()}")))
-    generate_practical_button.bind("<ButtonPress>", lambda event: validate_num_tests())
+    generate_practical_button = ttk.Button(root, image=unpressed_btn_2, text="Сгенерировать практические тесты",
+                                           style="Custom.TButton", command=lambda: (
+        generate_tests(int(num_tests_entry.get())),
+        messagebox.showinfo(title="Успешно", message=f"Сгенерировано практических тестов: {num_tests_entry.get()}")))
+    generate_practical_button.bind("<ButtonPress>", lambda event: (validate_num_tests()))
+    generate_practical_button.bind("<ButtonPress>",
+                                   lambda event: (validate_num_tests(), change_image_btn_2(pressed_btn_2)))
+    generate_practical_button.bind("<ButtonRelease>",
+                                   lambda event: (validate_num_tests(), change_image_btn_2(unpressed_btn_2)))
+    generate_practical_button.bind("<Enter>", lambda event: change_image_btn_2(on_enter_btn_2))
+    generate_practical_button.bind("<Leave>", lambda event: change_image_btn_2(unpressed_btn_2))
     generate_practical_button.pack(pady=10)
 
+    def change_image_btn_3(image):
+        generate_theoretical_button.config(image=image)
+
+    unpressed_btn_3 = tk.PhotoImage(file="data/Button3.1.2.png")
+    pressed_btn_3 = tk.PhotoImage(file="data/Button3.2.2.png")
+    on_enter_btn_3 = tk.PhotoImage(file="data/Button3.2.3.png")
+
     # Создаем кнопку для генерации теоретических тестов
-    generate_theoretical_button = ttk.Button(root, text="Сгенерировать теоретические тесты", style="Custom.TButton", command=lambda: (generate_teor_tests(int(num_tests_entry.get())), messagebox.showinfo(title="Успешно", message=f"Сгенерировано теоретических тестов: {num_tests_entry.get()}")))
+    generate_theoretical_button = ttk.Button(root, image=unpressed_btn_3, text="Сгенерировать теоретические тесты",
+                                             style="Custom.TButton", command=lambda: (
+        generate_teor_tests(int(num_tests_entry.get())),
+        messagebox.showinfo(title="Успешно", message=f"Сгенерировано теоретических тестов: {num_tests_entry.get()}")))
     generate_theoretical_button.bind("<ButtonPress>", lambda event: validate_num_tests())
+    generate_theoretical_button.bind("<ButtonPress>", lambda event: (validate_num_tests()))
+    generate_theoretical_button.bind("<ButtonPress>",
+                                     lambda event: (validate_num_tests(), change_image_btn_3(pressed_btn_3)))
+    generate_theoretical_button.bind("<ButtonRelease>",
+                                     lambda event: (validate_num_tests(), change_image_btn_3(unpressed_btn_3)))
+    generate_theoretical_button.bind("<Enter>", lambda event: change_image_btn_3(on_enter_btn_3))
+    generate_theoretical_button.bind("<Leave>", lambda event: change_image_btn_3(unpressed_btn_3))
     generate_theoretical_button.pack()
 
     def about():
         messagebox.showinfo(title="О программе",
-                            message="Версия 1.1\n\nАвторы:\nКолычев Егор\nКорнилов Кирилл\nПолевая Полина",
+                            message="Версия 1.3\n\nАвторы:\nКолычев Егор\nКорнилов Кирилл\nПолевая Полина",
                             detail="© MIT License. 2023.")
 
     menu = tk.Menu(root)
