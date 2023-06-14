@@ -525,7 +525,7 @@ def generate_tests(num_tests):
         run.style = style_task
 
         task_ans = [f'1/2\u03C0', f'2/\u03C0', f'\u03C0/36', f'\u221A3/4']
-        p_find = task_ans[0]
+        p_find = task_ans[1]
         random.shuffle(task_ans)
         answers[i][2] = chr(task_ans.index(p_find) + 1072).capitalize()
 
@@ -837,7 +837,7 @@ def generate_tests(num_tests):
         t.set(qn('xml:space'), 'preserve')
         t.text = 'p\u1D62'
         run._r.append(t)
-        row_cells[1].text = f"\u0070\u2081"
+        row_cells[1].text = f"{task_ans[0][0]}"
         row_cells[2].text = f"\u0070\u2082"
 
         table.alignment = docx.enum.table.WD_TABLE_ALIGNMENT.CENTER  # располагаем таблицу по центру
